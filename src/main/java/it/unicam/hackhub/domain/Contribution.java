@@ -5,9 +5,11 @@ import lombok.Getter;
 
 import it.unicam.hackhub.enums.ContributionState;
 import it.unicam.hackhub.enums.ContributionType;
+import lombok.NoArgsConstructor;
 
 
 @Entity
+@NoArgsConstructor
 @Table(name = "contributions")
 public class Contribution {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
