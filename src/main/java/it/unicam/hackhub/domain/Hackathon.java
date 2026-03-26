@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name="hackatons")
-public class Hackaton {
+@Table(name="hackathons")
+public class Hackathon {
     @Id @GeneratedValue
     private Long id;
 
-    //TODO hackaton entity capire bene come fare
+    //TODO hackathon entity capire bene come fare
 }

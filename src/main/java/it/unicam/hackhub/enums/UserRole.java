@@ -1,5 +1,5 @@
-package it.unicam.hackhub.domain;
+package it.unicam.hackhub.enums;
 
-public enum Role {
+public enum UserRole {
     VISITOR, TEAM_MEMBER, TEAM_LEADER, ORGANIZER, JUDGE, MENTOR
 }
