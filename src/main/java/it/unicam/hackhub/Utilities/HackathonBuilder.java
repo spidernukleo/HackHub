@@ -2,68 +2,83 @@ package it.unicam.hackhub.Utilities;
 
 import it.unicam.hackhub.domain.Hackathon;
 import it.unicam.hackhub.domain.User;
+import jakarta.validation.constraints.Positive;
+import lombok.NonNull;
 
 import java.time.LocalDateTime;
 
 public class HackathonBuilder implements Builder{
+
+    private String name;
+    private String rules;
+    private double prize;
+    private LocalDateTime creationDate;
+    private LocalDateTime startDate;
+    private LocalDateTime evaluationDate;
+    private LocalDateTime endingDate;
+    private int minTeams;
+    private int maxTeams;
+    private User organizer;
+    private User judge;
+
     @Override
-    public void setName(String name) {
-        //TODO implementare
+    public void setName(@NonNull String name) {
+        this.name = name;
     }
 
     @Override
-    public void setRules(String rules) {
-        //TODO implementare
+    public void setRules(@NonNull String rules) {
+        this.rules = rules;
     }
 
     @Override
-    public void setPrize(double prize) {
-        //TODO implementare
+    public void setPrize(@Positive double prize) {
+        this.prize = prize;
+    }
+
+
+    @Override
+    public void setCreationDate(@NonNull LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Override
-    public void setCreationDate(LocalDateTime creationDate) {
-        //TODO implementare
+    public void setStartDate(@NonNull LocalDateTime startDate) {
+        this.startDate = startDate;
     }
 
     @Override
-    public void setStartDate(LocalDateTime startDate) {
-        //TODO implementare
+    public void setEvaluationDate(@NonNull LocalDateTime evaluationDate) {
+        this.evaluationDate = evaluationDate;
     }
 
     @Override
-    public void setEvaluationDate(LocalDateTime evaluationDate) {
-        //TODO implementare
+    public void setEndingDate(@NonNull LocalDateTime endingDate) {
+        this.endingDate = endingDate;
     }
 
     @Override
-    public void setEndingDate(LocalDateTime endingDate) {
-        //TODO implementare
+    public void setminTeams(@Positive int minTeams) {
+        this.minTeams = minTeams;
     }
 
     @Override
-    public void setminTeams(int minTeams) {
-        //TODO implementare
+    public void setMaxTeams(@Positive int maxTeams) {
+         this.maxTeams = maxTeams;
     }
 
     @Override
-    public void setMaxTeams(int maxTeams) {
-        //TODO implementare
+    public void setOrganizer(@NonNull User organizer) {
+        this.organizer = organizer;
     }
 
     @Override
-    public void setOrganizer(User organizer) {
-        //TODO implementare
-    }
-
-    @Override
-    public void setJudge(User judge) {
-        //TODO implementare
+    public void setJudge(@NonNull User judge) {
+        this.judge = judge;
     }
 
     @Override
     public Hackathon getResult() {
-        //TODO implementare
-        return null;
+        return new Hackathon(name, rules, prize, creationDate, startDate, evaluationDate, endingDate, minTeams, maxTeams, organizer, judge);
     }
 }

@@ -3,10 +3,7 @@ package it.unicam.hackhub.domain;
 import it.unicam.hackhub.enums.HackathonState;
 import it.unicam.hackhub.enums.UserRole;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,6 +11,7 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @SuppressWarnings("JpaDataSourceORMInspection")
 @Table(name="hackathons")
 public class Hackathon {
@@ -75,6 +73,9 @@ public class Hackathon {
     @JoinColumn(name = "winner_id")
     @Getter @Setter
     private Team winner;
+
+    public Hackathon(String name, String rules, double prize, LocalDateTime creationDate, LocalDateTime startDate, LocalDateTime evaluationDate, LocalDateTime endingDate, int minTeams, int maxTeams, User organizer, User judge) {
+    }
 
     public boolean registerTeam(Team target) {
         //TODO implementare
