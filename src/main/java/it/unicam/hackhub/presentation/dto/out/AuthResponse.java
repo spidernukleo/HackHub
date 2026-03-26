@@ -1,4 +1,4 @@
-package it.unicam.hackhub.presentation.dto;
+package it.unicam.hackhub.presentation.dto.out;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

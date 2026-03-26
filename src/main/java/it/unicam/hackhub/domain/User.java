@@ -40,7 +40,9 @@ public class User implements UserDetails { //estendendo questa diventa l'user di
     @Column(name = "role", nullable = false)
     private Role role = Role.VISITOR;
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     //metodi dell'interfaccia spring UserDetails
     @Override

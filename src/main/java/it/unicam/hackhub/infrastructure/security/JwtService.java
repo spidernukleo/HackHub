@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.function.Function;
 
 
 @Component
@@ -40,5 +41,43 @@ public class JwtService {
                 .signWith(key)
                 .compact();
     }
+
+    ////////// DOPO LA GENERAZIONE DEL TOKEN SI POSSONO USARE STI METODI (AI MADE) /////////////
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    } //estrai generico
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(this.key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    } //estrai tutto e verifica
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    } //estrai email/user
+
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    } //estrai scadenza
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    } //controlla scadenza
+
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    } //controlla validità
+
+
+
+
+
+
 
 }

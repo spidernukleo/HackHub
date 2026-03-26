@@ -1,4 +1,4 @@
-package it.unicam.hackhub.presentation.dto;
+package it.unicam.hackhub.presentation.dto.in;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
