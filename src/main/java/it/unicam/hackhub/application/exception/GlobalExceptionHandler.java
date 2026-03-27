@@ -28,7 +28,6 @@ public class GlobalExceptionHandler {//se vuoi cambiare i messaggi di errore si 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
-
     //messaggi validazione DTO
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {

@@ -2,6 +2,7 @@ package it.unicam.hackhub.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,14 +20,14 @@ public class Team {
     @Getter
     private Long id;
 
-    @NotBlank
+    @NotBlank @Size(max=25)
     @Column(unique = true, nullable = false)
-    @Getter
+    @Getter @Setter
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leader_id", nullable = false)
-    @Getter
+    @Getter @Setter
     private User leader;
 
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
@@ -35,24 +36,20 @@ public class Team {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hackathon_id")
-    @Getter
-    @Setter
+    @Getter @Setter
     private Hackathon currentHackathon;
 
     public void addMember(User user) {
-        //TODO implementare
+        this.members.add(user);
+        user.setTeam(this);
     }
 
     public void removeMember(User user) {
-        //TODO implementare
-    }
-
-    public void setLeader(User leader) {
-        //TODO implementare
+        this.members.remove(user);
+        user.setTeam(null);
     }
 
     public boolean isEmpty() {
-        //TODO implementare
-        return false;
+        return members.isEmpty();
     }
 }

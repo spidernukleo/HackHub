@@ -35,14 +35,13 @@ public class JwtService {
     public String generateToken(User user) {
         return Jwts.builder()
                 .subject(user.getUsername())
-                .claim("user_role", user.getAuthorities().iterator().next().getAuthority()) //prendi il ruolo dal user e facci il token
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(key)
                 .compact();
     }
 
-    ////////// DOPO LA GENERAZIONE DEL TOKEN SI POSSONO USARE STI METODI (AI MADE) /////////////
+    ////////// DOPO LA GENERAZIONE DEL TOKEN SI POSSONO USARE STI METODI /////////////
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);

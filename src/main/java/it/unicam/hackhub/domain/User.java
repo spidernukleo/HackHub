@@ -40,7 +40,7 @@ public class User implements UserDetails { //estendendo questa diventa l'user di
     private String email;
 
     @NotBlank @Size(max=120)
-    @Column(unique=true, nullable=false)
+    @Column(nullable=false)
     @Getter @Setter
     private String password;
 
@@ -56,10 +56,20 @@ public class User implements UserDetails { //estendendo questa diventa l'user di
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hackathon_id")
+    @Getter @Setter
     private Hackathon hackathon;
 
+    public boolean isTeamLeader(){
+        if(this.team == null){
+            return false;
+        }
+        return this.team.getLeader().getId().equals(this.id);
+    }
 
-    //metodi dell'interfaccia spring UserDetails
+
+
+
+    //metodi dell'interfaccia spring UserDetails, non toccare
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + this.userRole.name()));
@@ -68,14 +78,5 @@ public class User implements UserDetails { //estendendo questa diventa l'user di
     @Override
     public String getUsername() {
         return this.email;
-    }
-
-    public Team createTeam() {
-        //TODO implementare
-        return null;
-    }
-    public boolean isTeamLeader(){
-        //TODO implementare
-        return false;
     }
 }

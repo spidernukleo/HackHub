@@ -36,7 +36,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() //login non richiede token
-                        .requestMatchers("/h2-console/**").permitAll() //ovviamente la console va disabilitata in prod
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/api/mock/**").permitAll()
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/api/hackathon", "/api/hackathon/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers

@@ -7,8 +7,9 @@ import it.unicam.hackhub.domain.User;
 import it.unicam.hackhub.infrastructure.repository.UserRepository;
 import it.unicam.hackhub.infrastructure.security.JwtService;
 import it.unicam.hackhub.presentation.dto.out.AuthResponse;
-import it.unicam.hackhub.presentation.dto.in.UserLoginDto;
-import it.unicam.hackhub.presentation.dto.in.UserRegistrationDto;
+import it.unicam.hackhub.presentation.dto.in.UserLoginRequest;
+import it.unicam.hackhub.presentation.dto.in.UserRegistrationRequest;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +26,8 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
 
-    public AuthResponse register(UserRegistrationDto dto) {
+    @Transactional
+    public AuthResponse register(UserRegistrationRequest dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new EmailAlreadyUsedException("Email already used.");
         }
@@ -42,7 +44,7 @@ public class AuthService {
         return new AuthResponse(jwtToken);
     }
 
-    public AuthResponse login(UserLoginDto dto) {
+    public AuthResponse login(UserLoginRequest dto) {
         Authentication authentication = authenticationManager.authenticate( //login direttamente gestito da spring
                 new UsernamePasswordAuthenticationToken(
                         dto.getEmail(),
