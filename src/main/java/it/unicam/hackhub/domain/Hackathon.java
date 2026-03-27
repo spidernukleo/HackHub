@@ -1,7 +1,6 @@
 package it.unicam.hackhub.domain;
 
-import it.unicam.hackhub.enums.HackathonState;
-import it.unicam.hackhub.enums.UserRole;
+import it.unicam.hackhub.domain.enums.HackathonState;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -61,11 +60,11 @@ public class Hackathon {
     @Getter @Setter
     private User judge;
 
-    @OneToMany(mappedBy = "hackathon", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "hackathon", fetch = FetchType.LAZY)
     @Getter @Setter
     private List<User> mentors = new ArrayList<>();
 
-    @OneToMany(mappedBy = "hackathon", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "currentHackathon", fetch = FetchType.LAZY)
     @Getter
     private List<Team> teams = new ArrayList<>();
 

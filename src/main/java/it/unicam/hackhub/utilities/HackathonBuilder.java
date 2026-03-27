@@ -1,4 +1,4 @@
-package it.unicam.hackhub.Utilities;
+package it.unicam.hackhub.utilities;
 
 import it.unicam.hackhub.domain.Hackathon;
 import it.unicam.hackhub.domain.User;

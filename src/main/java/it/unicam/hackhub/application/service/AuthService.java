@@ -2,14 +2,13 @@ package it.unicam.hackhub.application.service;
 
 
 import it.unicam.hackhub.application.exception.EmailAlreadyUsedException;
-import it.unicam.hackhub.enums.UserRole;
+import it.unicam.hackhub.domain.enums.UserRole;
 import it.unicam.hackhub.domain.User;
 import it.unicam.hackhub.infrastructure.repository.UserRepository;
 import it.unicam.hackhub.infrastructure.security.JwtService;
 import it.unicam.hackhub.presentation.dto.out.AuthResponse;
 import it.unicam.hackhub.presentation.dto.in.UserLoginDto;
 import it.unicam.hackhub.presentation.dto.in.UserRegistrationDto;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

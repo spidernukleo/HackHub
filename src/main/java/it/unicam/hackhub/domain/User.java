@@ -1,12 +1,11 @@
 package it.unicam.hackhub.domain;
 
 
-import it.unicam.hackhub.enums.UserRole;
+import it.unicam.hackhub.domain.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,21 +18,19 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor
-@Table(name="users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email")
-})
+@Table(name="users")
 public class User implements UserDetails { //estendendo questa diventa l'user di spring security
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Getter
     private Long id;
 
     @NotBlank @Size(max=25)
-    @Column(unique=true, nullable=false)
+    @Column(nullable=false)
     @Getter @Setter
     private String name;
 
     @NotBlank @Size(max=25)
-    @Column(unique=true, nullable=false)
+    @Column(nullable=false)
     @Getter @Setter
     private String surname;
 
@@ -56,6 +53,11 @@ public class User implements UserDetails { //estendendo questa diventa l'user di
     @JoinColumn(name = "team_id")
     @Getter @Setter
     private Team team;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hackathon_id")
+    private Hackathon hackathon;
+
 
     //metodi dell'interfaccia spring UserDetails
     @Override

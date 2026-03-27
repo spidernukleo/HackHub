@@ -3,8 +3,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.Getter;
 
-import it.unicam.hackhub.enums.ContributionState;
-import it.unicam.hackhub.enums.ContributionType;
+import it.unicam.hackhub.domain.enums.ContributionState;
+import it.unicam.hackhub.domain.enums.ContributionType;
 import lombok.NoArgsConstructor;
 
 

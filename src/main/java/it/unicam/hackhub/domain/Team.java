@@ -34,7 +34,7 @@ public class Team {
     private List<User> members = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hackathon_id", nullable = false)
+    @JoinColumn(name = "hackathon_id")
     @Getter
     @Setter
     private Hackathon currentHackathon;
