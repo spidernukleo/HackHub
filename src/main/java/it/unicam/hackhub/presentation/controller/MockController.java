@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MockController {
 
-    //CONTROLLER UTILIZZATO AI FINI DI CREARE UTENTI , TEAM, HACKATON, MOCK NEL DB
+    //CONTROLLER UTILIZZATO AI FINI DI CREARE UTENTI , TEAM, HACKATHON, MOCK NEL DB
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;

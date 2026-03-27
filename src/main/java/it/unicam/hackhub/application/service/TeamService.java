@@ -21,7 +21,7 @@ public class TeamService {
 
 
     @Transactional
-    public void creteTeam(TeamCreateRequest dto, String user){
+    public void createTeam(TeamCreateRequest dto, String user){
         User leader = userRepository.findByEmail(user).orElseThrow(()->new UsernameNotFoundException(user));
         if(leader.getTeam()!=null){
             throw new ResponseStatusException(HttpStatus.CONFLICT,"You already are in a team");
@@ -38,6 +38,24 @@ public class TeamService {
         newTeam.addMember(leader);
         leader.setUserRole(UserRole.TEAM_LEADER);
         userRepository.save(leader);
+    }
+
+    public boolean validateTeamName(String teamName) {
+        // TODO: Implementare validazione del nome del team
+        return false;
+    }
+
+    public boolean addMember(User u) {
+        // TODO: Implementare aggiunta membro al team
+        return false;
+    }
+
+    public void removeMember(Long userId) {
+        // TODO: Implementare rimozione membro dal team
+    }
+
+    public void deleteTeam(Long teamId) {
+        // TODO: Implementare eliminazione team
     }
 
 }

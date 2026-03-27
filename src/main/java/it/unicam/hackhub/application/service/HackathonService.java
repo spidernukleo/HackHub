@@ -15,6 +15,10 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import it.unicam.hackhub.domain.Team;
+import it.unicam.hackhub.domain.User;
+import it.unicam.hackhub.domain.enums.HackathonState;
+
 @Service
 @RequiredArgsConstructor
 public class HackathonService {
@@ -35,5 +39,64 @@ public class HackathonService {
         response.setName(find.getName());
         response.setPrize(find.getPrize());
         return response;
+    }
+
+    public Hackathon createHackathon() {
+        // TODO: Implementare la logica per creare un hackathon
+        return null;
+    }
+
+    public boolean validateInfo() {
+        // TODO: Implementare controlli di validazione
+        return false;
+    }
+
+    public List<Hackathon> showHackathons() {
+        // TODO: Alternativa o delegato di getAll(). Implementare.
+        return null;
+    }
+
+    public Hackathon getHackathonDetails() {
+        // TODO: Questo metodo potrebbe richiedere un id come parametro o essere delegato. Implementare.
+        return null;
+    }
+
+    public boolean joinHackathon() {
+        // TODO: Implementare (forse serviranno User/Team come argomenti in base al contesto)
+        return false;
+    }
+
+    public Hackathon abandonHackathon(Long id) {
+        // TODO: Logica di abbandono
+        return null;
+    }
+
+    public boolean addTeam(User u, Team t) {
+        // TODO: Implementare aggiunta di un team all'hackathon
+        return false;
+    }
+
+    public boolean removeTeam(Team t) {
+        // TODO: Implementare rimozione di un team dall'hackathon
+        return false;
+    }
+
+    public List<Team> getParticipants() {
+        // TODO: Implementare recupero dei team iscritti
+        return null;
+    }
+
+    public boolean setWinner(Team team) {
+        // TODO: Implementare assegnazione del vincitore
+        return false;
+    }
+
+    public void setHackathonState(HackathonState s) {
+        // TODO: Aggiornare lo stato dell'Hackathon (richiederebbe possibilmente l'ID)
+    }
+
+    public boolean addMentor(User mentor) {
+        // TODO: Aggiungere un mentor al hackathon
+        return false;
     }
 }
