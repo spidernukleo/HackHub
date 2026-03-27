@@ -11,9 +11,6 @@ import it.unicam.hackhub.domain.enums.ContributionType;
 
 @Repository
 public interface ContributionRepository extends JpaRepository<Contribution, Long> {
-
-    List<Contribution> findByUserId(Long userId);
-
     List<Contribution> findByType(ContributionType type);
 
     Optional<Contribution> findById(Long id);

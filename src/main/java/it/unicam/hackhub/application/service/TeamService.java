@@ -6,6 +6,7 @@ import it.unicam.hackhub.domain.enums.UserRole;
 import it.unicam.hackhub.infrastructure.repository.TeamRepository;
 import it.unicam.hackhub.infrastructure.repository.UserRepository;
 import it.unicam.hackhub.presentation.dto.in.TeamCreateRequest;
+import it.unicam.hackhub.presentation.dto.out.TeamCreateResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,10 +22,10 @@ public class TeamService {
 
 
     @Transactional
-    public void createTeam(TeamCreateRequest dto, String user){
+    public TeamCreateResponse createTeam(TeamCreateRequest dto, String user){
         User leader = userRepository.findByEmail(user).orElseThrow(()->new UsernameNotFoundException(user));
         if(leader.getTeam()!=null){
-            throw new ResponseStatusException(HttpStatus.CONFLICT,"You already are in a team");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"You already are in a team");
         }
 
         if(teamRepository.existsByName(dto.getName())){
@@ -38,12 +39,42 @@ public class TeamService {
         newTeam.addMember(leader);
         leader.setUserRole(UserRole.TEAM_LEADER);
         userRepository.save(leader);
+
+        return new TeamCreateResponse(newTeam.getId(), newTeam.getName());
     }
 
-    public boolean validateTeamName(String teamName) {
-        // TODO: Implementare validazione del nome del team
-        return false;
+    @Transactional
+    public void abandonTeam(String email){
+        User user = userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException(email));
+        Team team = user.getTeam();
+
+        if(team==null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Not in a team.");
+        }
+        if(team.getCurrentHackathon()!=null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Team in an Hackathon");
+        }
+
+        boolean isLeader = user.isTeamLeader();
+
+        team.removeMember(user);
+        user.setTeam(null);
+        user.setUserRole(UserRole.VISITOR);
+        userRepository.save(user);
+
+        if(isLeader || team.isEmpty()){
+            for(User remaining:team.getMembers()){
+                remaining.setTeam(null);
+                remaining.setUserRole(UserRole.VISITOR);
+                userRepository.save(remaining);
+            }
+            teamRepository.delete(team);
+        }else{
+            teamRepository.save(team);
+        }
     }
+
+
 
     public boolean addMember(User u) {
         // TODO: Implementare aggiunta membro al team

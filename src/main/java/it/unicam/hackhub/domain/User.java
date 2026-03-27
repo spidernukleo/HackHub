@@ -60,13 +60,23 @@ public class User implements UserDetails { //estendendo questa diventa l'user di
     private Hackathon hackathon;
 
     public boolean isTeamLeader(){
-        if(this.team == null){
-            return false;
-        }
-        return this.team.getLeader().getId().equals(this.id);
+        if (this.team == null || this.team.getLeader() == null) return false;
+        return this.equals(this.team.getLeader());
     }
 
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        return id != null && id.equals(((User) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 
 
     //metodi dell'interfaccia spring UserDetails, non toccare
