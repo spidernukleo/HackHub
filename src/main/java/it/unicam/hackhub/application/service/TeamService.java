@@ -1,18 +1,27 @@
 package it.unicam.hackhub.application.service;
 
+import it.unicam.hackhub.domain.Contribution;
 import it.unicam.hackhub.domain.Team;
 import it.unicam.hackhub.domain.User;
+import it.unicam.hackhub.domain.enums.ContributionState;
+import it.unicam.hackhub.domain.enums.ContributionType;
 import it.unicam.hackhub.domain.enums.UserRole;
+import it.unicam.hackhub.infrastructure.repository.ContributionRepository;
 import it.unicam.hackhub.infrastructure.repository.TeamRepository;
 import it.unicam.hackhub.infrastructure.repository.UserRepository;
 import it.unicam.hackhub.presentation.dto.in.TeamCreateRequest;
+import it.unicam.hackhub.presentation.dto.in.TeamInviteRequest;
 import it.unicam.hackhub.presentation.dto.out.TeamCreateResponse;
+import it.unicam.hackhub.presentation.dto.out.TeamInviteResponse;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -75,18 +84,8 @@ public class TeamService {
     }
 
 
-
-    public boolean addMember(User u) {
-        // TODO: Implementare aggiunta membro al team
-        return false;
-    }
-
-    public void removeMember(Long userId) {
-        // TODO: Implementare rimozione membro dal team
-    }
-
     public void deleteTeam(Long teamId) {
-        // TODO: Implementare eliminazione team
+        // TODO: Implementare eliminazione team prossima iterazione
     }
 
 }

@@ -3,17 +3,16 @@ package it.unicam.hackhub.presentation.controller;
 
 import it.unicam.hackhub.application.service.TeamService;
 import it.unicam.hackhub.presentation.dto.in.TeamCreateRequest;
+import it.unicam.hackhub.presentation.dto.in.TeamInviteRequest;
 import it.unicam.hackhub.presentation.dto.out.TeamCreateResponse;
+import it.unicam.hackhub.presentation.dto.out.TeamInviteResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/team")
@@ -24,16 +23,13 @@ public class TeamController {
     @PostMapping("/create")
     @PreAuthorize("hasRole('VISITOR')")
     public ResponseEntity<TeamCreateResponse> create(@Valid @RequestBody TeamCreateRequest dto, Authentication authentication) {
-        String user=authentication.getName();
-        return ResponseEntity.status(HttpStatus.CREATED).body(teamService.createTeam(dto, user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(teamService.createTeam(dto, authentication.getName()));
     }
-
 
     @PostMapping("/abandon")
     @PreAuthorize("hasAnyRole('TEAM_LEADER', 'TEAM_MEMBER')")
     public ResponseEntity<Void> create(Authentication authentication) {
-        String user = authentication.getName();
-        teamService.abandonTeam(user);
+        teamService.abandonTeam(authentication.getName());
         return ResponseEntity.noContent().build();
     }
 

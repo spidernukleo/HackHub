@@ -6,54 +6,61 @@ import lombok.Getter;
 import it.unicam.hackhub.domain.enums.ContributionState;
 import it.unicam.hackhub.domain.enums.ContributionType;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Entity
 @NoArgsConstructor
+@Getter @Setter
 @Table(name = "contributions")
 public class Contribution {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
     private Long id;
 
-    @Getter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ContributionType type;
 
-    @Getter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ContributionState state;
+    private ContributionState status;
 
-    @Getter
     @JoinColumn(name = "sender_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User sender;
 
-    @Getter
     @JoinColumn(name = "receiver_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User receiver;
 
-    @Getter
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)     //riferimento ad un hackathon potrebbe essere completamente inutile,rivalutare sistema di Contributions
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hackathon_id")
     private Hackathon hackathon;
 
-    @Getter
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
+
+    @Column(nullable = false, updatable = false)
     private LocalDateTime creationDate;
 
-    @Getter
-    @Column(nullable = false)
-    private String message;
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.creationDate == null) {
+            this.creationDate = LocalDateTime.now();
+        }
+        if (this.status == null) {
+            this.status = ContributionState.PENDING;
+        }
+    }
 
 
     public void accept(){
-        //TODO implementare
+        this.status = ContributionState.ACCEPTED;
     }
 
     public void decline(){
-        //TODO implementare
+        this.status = ContributionState.DECLINED;
     }
 }

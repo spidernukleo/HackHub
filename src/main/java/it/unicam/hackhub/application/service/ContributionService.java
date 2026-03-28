@@ -1,31 +1,98 @@
 package it.unicam.hackhub.application.service;
 
 import it.unicam.hackhub.domain.Contribution;
+import it.unicam.hackhub.domain.Team;
+import it.unicam.hackhub.domain.User;
+import it.unicam.hackhub.domain.enums.ContributionState;
+import it.unicam.hackhub.domain.enums.ContributionType;
 import it.unicam.hackhub.infrastructure.repository.ContributionRepository;
+import it.unicam.hackhub.infrastructure.repository.UserRepository;
+import it.unicam.hackhub.presentation.dto.in.TeamInviteRequest;
+import it.unicam.hackhub.presentation.dto.out.TeamInviteResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ContributionService {
-
     private final ContributionRepository contributionRepository;
+    private final UserRepository userRepository;
 
-    public List<Contribution> getContributions(Long userId) {
-        // TODO: Implementare la logica per ottenere le contributions di un utente
-        return null;
+    public List<TeamInviteResponse> getContributions(String email, ContributionState status) {
+        User receiver = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+
+        List<Contribution> invites;
+        if (status != null) {
+            invites = contributionRepository.findByReceiverAndTypeAndStatus(receiver, ContributionType.INVITE, status);
+        } else {
+            invites = contributionRepository.findByReceiverAndType(receiver, ContributionType.INVITE);
+        }
+
+        return invites.stream().map(this::mapInviteToDTO).toList();
     }
 
-    public boolean addContribution(Contribution c) {
-        // TODO: Implementare la logica per aggiungere una contribution
-        return false;
+    public TeamInviteResponse getById(Long id, String email) {
+        User receiver = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+
+        Contribution invite = contributionRepository.findByIdAndReceiver(id, receiver).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invite not found."));
+
+        return mapInviteToDTO(invite);
     }
 
-    public boolean sendInvite(Long teamId, Long targetId) {
-        // TODO: Implementare la logica per inviare un invito a un utente
-        return false;
+
+    @Transactional
+    public TeamInviteResponse sendInvite(Long teamId, TeamInviteRequest dto, String email){
+        User leader = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sender not found."));
+        Team team = leader.getTeam();
+        if (team == null || !team.getId().equals(teamId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not your team.");
+        }
+
+        if (!leader.isTeamLeader()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the team leader can send invites.");
+        }
+
+        User receiver = userRepository.findById(dto.getReceiverId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Receiver not found."));
+        if (leader.equals(receiver)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot invite yourself.");
+        }
+
+        if (receiver.getTeam() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Receiver is already in a team.");
+        }
+
+        if (contributionRepository.existsByTeamAndReceiverAndStatusAndType(team, receiver, ContributionState.PENDING, ContributionType.INVITE)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Receiver already invited."); //antispam
+        }
+
+        Contribution invite = new Contribution();
+        invite.setType(ContributionType.INVITE);
+        invite.setSender(leader);
+        invite.setReceiver(receiver);
+        invite.setTeam(team);
+        invite = contributionRepository.save(invite);
+
+        return mapInviteToDTO(invite);
     }
+
+
+    private TeamInviteResponse mapInviteToDTO(Contribution invite) {
+        return TeamInviteResponse.builder()
+                .id(invite.getId())
+                .teamId(invite.getTeam().getId())
+                .senderId(invite.getSender().getId())
+                .status(invite.getStatus())
+                .build();
+    }
+
+
+
+
 
     public boolean sendSupportRequest(Long teamId, String msg) {
         // TODO: Implementare la logica per inviare una richiesta di supporto
@@ -47,8 +114,5 @@ public class ContributionService {
         return false;
     }
 
-    public Contribution getContributionDetails(Long id) {
-        // TODO: Implementare la logica per ottenere i dettagli di una contribution
-        return null;
-    }
+
 }
