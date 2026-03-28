@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import it.unicam.hackhub.presentation.dto.in.MessageRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -90,29 +91,24 @@ public class ContributionService {
                 .build();
     }
 
-
-
-
-
-    public boolean sendSupportRequest(Long teamId, String msg) {
+    public boolean sendSupportRequest(Long teamId, MessageRequest req, String username) {
         // TODO: Implementare la logica per inviare una richiesta di supporto
         return false;
     }
 
-    public boolean sendReport(Long teamId, String msg) {
+    public boolean sendReport(Long teamId, MessageRequest req, String username) {
         // TODO: Implementare la logica per inviare un referto/report
         return false;
     }
 
-    public boolean acceptContribution(Long id) {
+    public boolean acceptContribution(Long id, String username) {
         // TODO: Implementare la logica per accettare una contribution
         return false;
     }
 
-    public boolean declineContribution(Long id) {
+    public boolean declineContribution(Long id, String username) {
         // TODO: Implementare la logica per rifiutare una contribution
         return false;
     }
-
 
 }

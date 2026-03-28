@@ -2,6 +2,7 @@ package it.unicam.hackhub.application.service;
 
 import it.unicam.hackhub.domain.Hackathon;
 import it.unicam.hackhub.infrastructure.repository.HackathonRepository;
+import it.unicam.hackhub.presentation.dto.in.HackathonCreateRequest;
 import it.unicam.hackhub.presentation.dto.out.HackathonDetailResponse;
 import it.unicam.hackhub.presentation.dto.out.HackathonListResponse;
 import jakarta.persistence.EntityNotFoundException;
@@ -41,7 +42,7 @@ public class HackathonService {
         return response;
     }
 
-    public Hackathon createHackathon() {
+    public Hackathon createHackathon(HackathonCreateRequest req, String username) {
         // TODO: Implementare la logica per creare un hackathon
         return null;
     }
@@ -61,7 +62,7 @@ public class HackathonService {
         return null;
     }
 
-    public boolean joinHackathon() {
+    public boolean joinHackathon(Long id, String username) {
         // TODO: Implementare (forse serviranno User/Team come argomenti in base al contesto)
         return false;
     }
