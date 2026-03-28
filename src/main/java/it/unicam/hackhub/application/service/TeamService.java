@@ -62,7 +62,7 @@ public class TeamService {
         user.setUserRole(UserRole.VISITOR);
         userRepository.save(user);
 
-        if(isLeader || team.isEmpty()){
+        if(isLeader){
             for(User remaining:team.getMembers()){
                 remaining.setTeam(null);
                 remaining.setUserRole(UserRole.VISITOR);

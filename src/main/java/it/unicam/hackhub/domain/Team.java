@@ -48,8 +48,4 @@ public class Team {
         this.members.remove(user);
         user.setTeam(null);
     }
-
-    public boolean isEmpty() {
-        return members.isEmpty();
-    }
 }
