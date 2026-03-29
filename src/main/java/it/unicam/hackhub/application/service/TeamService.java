@@ -1,27 +1,18 @@
 package it.unicam.hackhub.application.service;
 
-import it.unicam.hackhub.domain.Contribution;
 import it.unicam.hackhub.domain.Team;
 import it.unicam.hackhub.domain.User;
-import it.unicam.hackhub.domain.enums.ContributionState;
-import it.unicam.hackhub.domain.enums.ContributionType;
 import it.unicam.hackhub.domain.enums.UserRole;
-import it.unicam.hackhub.infrastructure.repository.ContributionRepository;
 import it.unicam.hackhub.infrastructure.repository.TeamRepository;
 import it.unicam.hackhub.infrastructure.repository.UserRepository;
 import it.unicam.hackhub.presentation.dto.in.TeamCreateRequest;
-import it.unicam.hackhub.presentation.dto.in.TeamInviteRequest;
 import it.unicam.hackhub.presentation.dto.out.TeamCreateResponse;
-import it.unicam.hackhub.presentation.dto.out.TeamInviteResponse;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -68,13 +59,13 @@ public class TeamService {
 
         team.removeMember(user);
         user.setTeam(null);
-        user.setUserRole(UserRole.VISITOR);
+        user.setUserRole(UserRole.USER);
         userRepository.save(user);
 
         if(isLeader){
             for(User remaining:team.getMembers()){
                 remaining.setTeam(null);
-                remaining.setUserRole(UserRole.VISITOR);
+                remaining.setUserRole(UserRole.USER);
                 userRepository.save(remaining);
             }
             teamRepository.delete(team);

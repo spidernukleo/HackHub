@@ -2,12 +2,9 @@ package it.unicam.hackhub.presentation.controller;
 
 
 import it.unicam.hackhub.application.service.ContributionService;
-import it.unicam.hackhub.domain.Contribution;
 import it.unicam.hackhub.domain.enums.ContributionState;
-import it.unicam.hackhub.presentation.dto.in.TeamInviteRequest;
-import it.unicam.hackhub.presentation.dto.out.HackathonDetailResponse;
-import it.unicam.hackhub.presentation.dto.out.HackathonListResponse;
-import it.unicam.hackhub.presentation.dto.out.TeamInviteResponse;
+import it.unicam.hackhub.presentation.dto.in.InviteRequest;
+import it.unicam.hackhub.presentation.dto.out.InviteResponse;
 import it.unicam.hackhub.presentation.dto.in.MessageRequest;
 import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
@@ -28,20 +25,47 @@ public class ContributionController {
 
     @GetMapping("/invites")
     @PreAuthorize("hasRole('VISITOR')")
-    public ResponseEntity<List<TeamInviteResponse>> getInvites(@RequestParam(required = false) ContributionState status, Authentication authentication) {
+    public ResponseEntity<List<InviteResponse>> getInvites(@RequestParam(required = false) ContributionState status, Authentication authentication) {
         return ResponseEntity.ok(contributionService.getContributions(authentication.getName(), status));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TeamInviteResponse> getById(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<InviteResponse> getById(@PathVariable Long id, Authentication authentication) {
         return ResponseEntity.ok(contributionService.getById(id, authentication.getName()));
     }
 
     @PostMapping("/{teamId}/invite")
     @PreAuthorize("hasRole('TEAM_LEADER')")
-    public ResponseEntity<TeamInviteResponse> sendInvite(@PathVariable Long teamId, @RequestBody TeamInviteRequest dto, Authentication authentication) {
+    public ResponseEntity<InviteResponse> sendInvite(@PathVariable Long teamId, @RequestBody InviteRequest dto, Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED).body(contributionService.sendInvite(teamId, dto, authentication.getName()));
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @PostMapping("/{teamId}/support")
     @PreAuthorize("hasRole('TEAM_LEADER')")

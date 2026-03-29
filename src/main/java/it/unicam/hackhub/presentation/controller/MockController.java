@@ -42,7 +42,7 @@ public class MockController {
             userCounter++;
         }
         for (int i = 0; i < 10; i++) {
-            mockUsers.add(createMockUser("Visitor" + userCounter, encodedPassword, UserRole.VISITOR));
+            mockUsers.add(createMockUser("User" + userCounter, encodedPassword, UserRole.USER));
             userCounter++;
         }
         userRepository.saveAll(mockUsers);

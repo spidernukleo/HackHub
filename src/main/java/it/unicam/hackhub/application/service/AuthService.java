@@ -34,7 +34,7 @@ public class AuthService {
         User user = new User();
         user.setUsername(dto.getUsername());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setUserRole(UserRole.VISITOR);
+        user.setUserRole(UserRole.USER);
         User saved = userRepository.save(user); //salva a db registrazione completa
 
         String jwtToken = jwtService.generateToken(saved);

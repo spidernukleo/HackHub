@@ -37,7 +37,7 @@ public class User implements UserDetails { //estendendo questa diventa l'user di
     @Enumerated(EnumType.STRING)
     @Column(name = "userRole", nullable = false)
     @Getter @Setter
-    private UserRole userRole = UserRole.VISITOR;
+    private UserRole userRole = UserRole.USER;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")

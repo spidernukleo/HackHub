@@ -3,9 +3,7 @@ package it.unicam.hackhub.presentation.controller;
 
 import it.unicam.hackhub.application.service.TeamService;
 import it.unicam.hackhub.presentation.dto.in.TeamCreateRequest;
-import it.unicam.hackhub.presentation.dto.in.TeamInviteRequest;
 import it.unicam.hackhub.presentation.dto.out.TeamCreateResponse;
-import it.unicam.hackhub.presentation.dto.out.TeamInviteResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class TeamInviteRequest {
+public class InviteRequest {
     @NotBlank
     private Long receiverId;
 }

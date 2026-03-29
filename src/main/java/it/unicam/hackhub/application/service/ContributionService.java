@@ -5,10 +5,11 @@ import it.unicam.hackhub.domain.Team;
 import it.unicam.hackhub.domain.User;
 import it.unicam.hackhub.domain.enums.ContributionState;
 import it.unicam.hackhub.domain.enums.ContributionType;
+import it.unicam.hackhub.domain.enums.UserRole;
 import it.unicam.hackhub.infrastructure.repository.ContributionRepository;
 import it.unicam.hackhub.infrastructure.repository.UserRepository;
-import it.unicam.hackhub.presentation.dto.in.TeamInviteRequest;
-import it.unicam.hackhub.presentation.dto.out.TeamInviteResponse;
+import it.unicam.hackhub.presentation.dto.in.InviteRequest;
+import it.unicam.hackhub.presentation.dto.out.InviteResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class ContributionService {
     private final ContributionRepository contributionRepository;
     private final UserRepository userRepository;
 
-    public List<TeamInviteResponse> getContributions(String email, ContributionState status) {
+    public List<InviteResponse> getContributions(String email, ContributionState status) {
         User receiver = userRepository.findByUsername(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
 
         List<Contribution> invites;
@@ -37,7 +38,7 @@ public class ContributionService {
         return invites.stream().map(this::mapInviteToDTO).toList();
     }
 
-    public TeamInviteResponse getById(Long id, String email) {
+    public InviteResponse getById(Long id, String email) {
         User receiver = userRepository.findByUsername(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
 
         Contribution invite = contributionRepository.findByIdAndReceiver(id, receiver).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invite not found."));
@@ -47,7 +48,7 @@ public class ContributionService {
 
 
     @Transactional
-    public TeamInviteResponse sendInvite(Long teamId, TeamInviteRequest dto, String email){
+    public InviteResponse sendInvite(Long teamId, InviteRequest dto, String email){
         User leader = userRepository.findByUsername(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sender not found."));
         Team team = leader.getTeam();
         if (team == null || !team.getId().equals(teamId)) {
@@ -63,8 +64,8 @@ public class ContributionService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot invite yourself.");
         }
 
-        if (receiver.getTeam() != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Receiver is already in a team.");
+        if (!receiver.getUserRole().equals(UserRole.USER)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Receiver is already in a team. / Can't invite staff member.");
         }
 
         if (contributionRepository.existsByTeamAndReceiverAndStatusAndType(team, receiver, ContributionState.PENDING, ContributionType.INVITE)) {
@@ -82,8 +83,8 @@ public class ContributionService {
     }
 
 
-    private TeamInviteResponse mapInviteToDTO(Contribution invite) {
-        return TeamInviteResponse.builder()
+    private InviteResponse mapInviteToDTO(Contribution invite) {
+        return InviteResponse.builder()
                 .id(invite.getId())
                 .teamId(invite.getTeam().getId())
                 .senderId(invite.getSender().getId())
