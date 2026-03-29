@@ -76,22 +76,28 @@ public class Hackathon {
     public Hackathon(String name, String rules, double prize, LocalDateTime creationDate, LocalDateTime startDate, LocalDateTime evaluationDate, LocalDateTime endingDate, int minTeams, int maxTeams, User organizer, User judge) {
     }
 
-    public boolean registerTeam(Team target) {
-        //TODO implementare
-        return false;
+    public boolean registerTeam(@NonNull Team target) {
+        if (this.teams.contains(target)) return false;
+        this.teams.add(target);
+        target.setCurrentHackathon(this);
+        return true;
     }
 
-    public boolean removeTeam(Team target) {
-        //TODO implementare
-        return false;
+    public boolean removeTeam(@NonNull Team target) {
+        if (!this.teams.contains(target)) return false;
+        this.teams.remove(target);
+        target.setCurrentHackathon(null);
+        return true;
     }
 
-    public boolean addMentor(User target) {
-        //TODO implementare
-        return false;
+    public boolean addMentor(@NonNull User target) {
+        if (this.mentors.contains(target)) return false;
+        this.mentors.add(target);
+        target.setHackathon(this);
+        return true;
     }
 
     public void proclaimWinner(Team target) {
-        //TODO implementare
+        this.winner = target;
     }
 }
