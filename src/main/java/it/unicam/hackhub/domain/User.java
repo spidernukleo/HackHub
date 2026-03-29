@@ -24,20 +24,10 @@ public class User implements UserDetails { //estendendo questa diventa l'user di
     @Getter
     private Long id;
 
-    @NotBlank @Size(max=25)
-    @Column(nullable=false)
-    @Getter @Setter
-    private String name;
-
-    @NotBlank @Size(max=25)
-    @Column(nullable=false)
-    @Getter @Setter
-    private String surname;
-
-    @NotBlank @Email @Size(max=50)
+    @NotBlank @Size(max=50)
     @Column(unique=true, nullable=false)
     @Getter @Setter
-    private String email;
+    private String username;
 
     @NotBlank @Size(max=120)
     @Column(nullable=false)
@@ -59,12 +49,16 @@ public class User implements UserDetails { //estendendo questa diventa l'user di
     @Getter @Setter
     private Hackathon hackathon;
 
-    public boolean isTeamLeader(){
+    public boolean isTeamLeader() {
         if (this.team == null || this.team.getLeader() == null) return false;
         return this.equals(this.team.getLeader());
     }
 
-
+    //metodi dell'interfaccia spring UserDetails, non toccare
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.userRole.name()));
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -78,15 +72,4 @@ public class User implements UserDetails { //estendendo questa diventa l'user di
         return getClass().hashCode();
     }
 
-
-    //metodi dell'interfaccia spring UserDetails, non toccare
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + this.userRole.name()));
-    }
-
-    @Override
-    public String getUsername() {
-        return this.email;
-    }
 }

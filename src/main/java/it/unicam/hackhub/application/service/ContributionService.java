@@ -25,7 +25,7 @@ public class ContributionService {
     private final UserRepository userRepository;
 
     public List<TeamInviteResponse> getContributions(String email, ContributionState status) {
-        User receiver = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+        User receiver = userRepository.findByUsername(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
 
         List<Contribution> invites;
         if (status != null) {
@@ -38,7 +38,7 @@ public class ContributionService {
     }
 
     public TeamInviteResponse getById(Long id, String email) {
-        User receiver = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+        User receiver = userRepository.findByUsername(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
 
         Contribution invite = contributionRepository.findByIdAndReceiver(id, receiver).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invite not found."));
 
@@ -48,7 +48,7 @@ public class ContributionService {
 
     @Transactional
     public TeamInviteResponse sendInvite(Long teamId, TeamInviteRequest dto, String email){
-        User leader = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sender not found."));
+        User leader = userRepository.findByUsername(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sender not found."));
         Team team = leader.getTeam();
         if (team == null || !team.getId().equals(teamId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not your team.");

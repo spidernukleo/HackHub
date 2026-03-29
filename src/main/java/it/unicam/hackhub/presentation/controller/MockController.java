@@ -30,29 +30,28 @@ public class MockController {
         String encodedPassword = passwordEncoder.encode("Password123!");
         int userCounter = 1;
         for (int i = 0; i < 3; i++) {
-            mockUsers.add(createMockUser("Organizzatore" + userCounter, "Cognome" + userCounter, "utente" + userCounter + "@hackhub.com", encodedPassword, UserRole.ORGANIZER));
+            mockUsers.add(createMockUser("Organizzatore" + userCounter, encodedPassword, UserRole.ORGANIZER));
             userCounter++;
         }
         for (int i = 0; i < 3; i++) {
-            mockUsers.add(createMockUser("Giudice" + userCounter, "Cognome" + userCounter, "utente" + userCounter + "@hackhub.com", encodedPassword, UserRole.JUDGE));
+            mockUsers.add(createMockUser("Giudice" + userCounter, encodedPassword, UserRole.JUDGE));
             userCounter++;
         }
         for (int i = 0; i < 3; i++) {
-            mockUsers.add(createMockUser("Mentor" + userCounter, "Cognome" + userCounter, "utente" + userCounter + "@hackhub.com", encodedPassword, UserRole.MENTOR));
+            mockUsers.add(createMockUser("Mentor" + userCounter, encodedPassword, UserRole.MENTOR));
             userCounter++;
         }
         for (int i = 0; i < 10; i++) {
-            mockUsers.add(createMockUser("Visitor" + userCounter, "Cognome" + userCounter, "utente" + userCounter + "@hackhub.com", encodedPassword, UserRole.VISITOR));userCounter++;
+            mockUsers.add(createMockUser("Visitor" + userCounter, encodedPassword, UserRole.VISITOR));
+            userCounter++;
         }
         userRepository.saveAll(mockUsers);
         return ResponseEntity.ok("Creati " + mockUsers.size() + " utenti mock con successo! (3 Org, 3 Giudici, 3 Mentor, 10 Visitor)");
     }
 
-    private User createMockUser(String name, String surname, String email, String password, UserRole role) {
+    private User createMockUser(String username, String password, UserRole role) {
         User user = new User();
-        user.setName(name);
-        user.setSurname(surname);
-        user.setEmail(email);
+        user.setUsername(username);
         user.setPassword(password);
         user.setUserRole(role);
         return user;

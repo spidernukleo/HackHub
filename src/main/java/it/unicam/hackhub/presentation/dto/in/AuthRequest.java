@@ -6,15 +6,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class UserRegistrationRequest {
-    @NotBlank @Size(max=25)
-    private String name;
-
-    @NotBlank @Size(max=25)
-    private String surname;
-
+public class AuthRequest {
     @NotBlank @Email @Size(max=50)
-    private String email;
+    private String username;
 
     @NotBlank @Size(min=8, max=25)
     private String password;

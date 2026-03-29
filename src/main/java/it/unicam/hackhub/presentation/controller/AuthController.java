@@ -4,8 +4,7 @@ package it.unicam.hackhub.presentation.controller;
 
 import it.unicam.hackhub.application.service.AuthService;
 import it.unicam.hackhub.presentation.dto.out.AuthResponse;
-import it.unicam.hackhub.presentation.dto.in.UserLoginRequest;
-import it.unicam.hackhub.presentation.dto.in.UserRegistrationRequest;
+import it.unicam.hackhub.presentation.dto.in.AuthRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,13 +21,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody UserRegistrationRequest dto) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody AuthRequest dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(dto));
     }
 
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody UserLoginRequest dto) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest dto) {
         return ResponseEntity.ok(authService.login(dto));
     }
 

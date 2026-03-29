@@ -20,7 +20,7 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username).orElseThrow(() -> new BadCredentialsException("Bad Credentials."));
+        return username -> userRepository.findByUsername(username).orElseThrow(() -> new BadCredentialsException("Bad Credentials."));
     }
 
     @Bean

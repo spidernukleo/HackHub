@@ -23,8 +23,8 @@ public class GlobalExceptionHandler {//se vuoi cambiare i messaggi di errore si 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 
-    @ExceptionHandler(EmailAlreadyUsedException.class)
-    public ResponseEntity<Map<String, String>> handleUserAlreadyExists(EmailAlreadyUsedException ex) {
+    @ExceptionHandler(UsernameAlreadyUsedException.class)
+    public ResponseEntity<Map<String, String>> handleUserAlreadyExists(UsernameAlreadyUsedException ex) {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);

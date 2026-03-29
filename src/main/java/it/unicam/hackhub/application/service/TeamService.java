@@ -32,7 +32,7 @@ public class TeamService {
 
     @Transactional
     public TeamCreateResponse createTeam(TeamCreateRequest dto, String user){
-        User leader = userRepository.findByEmail(user).orElseThrow(()->new UsernameNotFoundException(user));
+        User leader = userRepository.findByUsername(user).orElseThrow(()->new UsernameNotFoundException(user));
         if(leader.getTeam()!=null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"You already are in a team");
         }
@@ -54,7 +54,7 @@ public class TeamService {
 
     @Transactional
     public void abandonTeam(String email){
-        User user = userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException(email));
+        User user = userRepository.findByUsername(email).orElseThrow(()->new UsernameNotFoundException(email));
         Team team = user.getTeam();
 
         if(team==null){

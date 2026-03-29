@@ -8,9 +8,7 @@ public class UserMapper {
     public UserDTO toDTO(@NonNull User user) {
         return new UserDTO(
                 user.getId(),
-                user.getName(),
-                user.getSurname(),
-                user.getEmail(),
+                user.getUsername(),
                 user.getUserRole(),
                 user.getTeam().getId(),
                 user.getHackathon().getId()

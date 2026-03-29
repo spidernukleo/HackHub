@@ -1,14 +1,13 @@
 package it.unicam.hackhub.application.service;
 
 
-import it.unicam.hackhub.application.exception.EmailAlreadyUsedException;
+import it.unicam.hackhub.application.exception.UsernameAlreadyUsedException;
 import it.unicam.hackhub.domain.enums.UserRole;
 import it.unicam.hackhub.domain.User;
 import it.unicam.hackhub.infrastructure.repository.UserRepository;
 import it.unicam.hackhub.infrastructure.security.JwtService;
+import it.unicam.hackhub.presentation.dto.in.AuthRequest;
 import it.unicam.hackhub.presentation.dto.out.AuthResponse;
-import it.unicam.hackhub.presentation.dto.in.UserLoginRequest;
-import it.unicam.hackhub.presentation.dto.in.UserRegistrationRequest;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,16 +26,14 @@ public class AuthService {
 
 
     @Transactional
-    public AuthResponse register(UserRegistrationRequest dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new EmailAlreadyUsedException("Email already used.");
+    public AuthResponse register(AuthRequest dto) {
+        if (userRepository.existsByUsername(dto.getUsername())) {
+            throw new UsernameAlreadyUsedException("Username already used.");
         }
 
         User user = new User();
-        user.setEmail(dto.getEmail());
+        user.setUsername(dto.getUsername());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setName(dto.getName());
-        user.setSurname(dto.getSurname());
         user.setUserRole(UserRole.VISITOR);
         User saved = userRepository.save(user); //salva a db registrazione completa
 
@@ -44,10 +41,10 @@ public class AuthService {
         return new AuthResponse(jwtToken);
     }
 
-    public AuthResponse login(UserLoginRequest dto) {
+    public AuthResponse login(AuthRequest dto) {
         Authentication authentication = authenticationManager.authenticate( //login direttamente gestito da spring
                 new UsernamePasswordAuthenticationToken(
-                        dto.getEmail(),
+                        dto.getUsername(),
                         dto.getPassword()
                 )
         );

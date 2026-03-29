@@ -58,7 +58,7 @@ public class JwtService {
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
-    } //estrai email/user
+    } //estrai username
 
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
