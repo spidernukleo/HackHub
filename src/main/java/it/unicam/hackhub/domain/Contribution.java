@@ -43,6 +43,8 @@ public class Contribution {
     @Column(nullable = false, updatable = false)
     private LocalDateTime creationDate;
 
+    @Column(columnDefinition = "TEXT")
+    private String message;
 
     @PrePersist
     protected void onCreate() {

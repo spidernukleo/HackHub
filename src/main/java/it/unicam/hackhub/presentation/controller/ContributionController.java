@@ -4,8 +4,8 @@ package it.unicam.hackhub.presentation.controller;
 import it.unicam.hackhub.application.service.ContributionService;
 import it.unicam.hackhub.domain.enums.ContributionStatus;
 import it.unicam.hackhub.presentation.dto.in.InviteRequest;
-import it.unicam.hackhub.presentation.dto.out.InviteResponse;
 import it.unicam.hackhub.presentation.dto.in.MessageRequest;
+import it.unicam.hackhub.presentation.dto.out.ContributionResponse;
 import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,66 +20,37 @@ import java.util.List;
 @RequestMapping("/api/contribution")
 @RequiredArgsConstructor
 public class ContributionController {
-
     private final ContributionService contributionService;
 
     @GetMapping("/me/invites")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<InviteResponse>> getInvites(@RequestParam(required = false) ContributionStatus status, Authentication authentication) {
-        return ResponseEntity.ok(contributionService.getContributions(authentication.getName(), status));
+    @PreAuthorize("hasAnyRole('TEAM_LEADER', 'TEAM_MEMBER', 'USER')")
+    public ResponseEntity<List<ContributionResponse>> getInvites(@RequestParam(required = false) ContributionStatus status, Authentication authentication) {
+        return ResponseEntity.ok(contributionService.getMyInvites(authentication.getName(), status));
+    }
+
+    @GetMapping("/me/support-requests")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<List<ContributionResponse>> getSupportRequests(@RequestParam(required = false) ContributionStatus status, Authentication authentication) {
+        return ResponseEntity.ok(contributionService.getMySupportRequests(authentication.getName(), status));
+    }
+
+    @GetMapping("/me/reports")
+    @PreAuthorize("hasRole('ORGANIZER')")
+    public ResponseEntity<List<ContributionResponse>> getReports(@RequestParam(required = false) ContributionStatus status, Authentication authentication) {
+        return ResponseEntity.ok(contributionService.getMyInvites(authentication.getName(), status));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InviteResponse> getById(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<ContributionResponse> getById(@PathVariable Long id, Authentication authentication) {
         return ResponseEntity.ok(contributionService.getById(id, authentication.getName()));
     }
 
     @PostMapping("/{teamId}/invite")
     @PreAuthorize("hasRole('TEAM_LEADER')")
-    public ResponseEntity<InviteResponse> sendInvite(@PathVariable Long teamId, @RequestBody InviteRequest dto, Authentication authentication) {
+    public ResponseEntity<ContributionResponse> sendInvite(@PathVariable Long teamId, @RequestBody InviteRequest dto, Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED).body(contributionService.sendInvite(teamId, dto, authentication.getName()));
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @PostMapping("/{teamId}/support")
-    @PreAuthorize("hasRole('TEAM_LEADER')")
-    public ResponseEntity<Void> sendSupportRequest(@PathVariable Long teamId, @Valid @RequestBody MessageRequest dto, Authentication authentication) {
-        contributionService.sendSupportRequest(teamId, dto, authentication.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @PostMapping("/{teamId}/report")
-    @PreAuthorize("hasRole('TEAM_LEADER')")
-    public ResponseEntity<Void> sendReport(@PathVariable Long teamId, @Valid @RequestBody MessageRequest dto, Authentication authentication) {
-        contributionService.sendReport(teamId, dto, authentication.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
 
     @PostMapping("/{id}/accept")
     @PreAuthorize("hasRole('USER')")
@@ -93,6 +64,23 @@ public class ContributionController {
     public ResponseEntity<Void> declineContribution(@PathVariable Long id, Authentication authentication) {
         contributionService.declineContribution(id, authentication.getName());
         return ResponseEntity.ok().build();
+    }
+
+
+
+
+    @PostMapping("/{teamId}/support")
+    @PreAuthorize("hasRole('TEAM_MEMBER')") /// ////////////PROSSIMA ITERAZIONE
+    public ResponseEntity<Void> sendSupportRequest(@PathVariable Long teamId, @Valid @RequestBody MessageRequest dto, Authentication authentication) {
+        contributionService.sendSupportRequest(teamId, dto, authentication.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/{teamId}/report")
+    @PreAuthorize("hasRole('MENTOR')") /////////////////////PROSSIMA ITERAZIONE
+    public ResponseEntity<Void> sendReport(@PathVariable Long teamId, @Valid @RequestBody MessageRequest dto, Authentication authentication) {
+        contributionService.sendReport(teamId, dto, authentication.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 }

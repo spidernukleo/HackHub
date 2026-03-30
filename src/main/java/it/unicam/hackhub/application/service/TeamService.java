@@ -74,6 +74,17 @@ public class TeamService {
         }
     }
 
+    @Transactional
+    public void addMember(Long teamId, User user) {
+        Team team = teamRepository.findById(teamId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+        user.setTeam(team);
+        userRepository.save(user);
+    }
+
+
+
+
+
 
     public void deleteTeam(Long teamId) {
         // TODO: Implementare eliminazione team prossima iterazione

@@ -14,7 +14,6 @@ import it.unicam.hackhub.domain.enums.ContributionType;
 
 @Repository
 public interface ContributionRepository extends JpaRepository<Contribution, Long> {
-    Optional<Contribution> findById(Long id);
 
     List<Contribution> findByReceiverAndType(User receiver, ContributionType type);
 
@@ -22,5 +21,4 @@ public interface ContributionRepository extends JpaRepository<Contribution, Long
 
     Boolean existsByTeamAndReceiverAndStatusAndType(Team team, User reciever, ContributionStatus state, ContributionType type);
 
-    Optional<Contribution> findByIdAndReceiver(Long id, User receiver);
 }
