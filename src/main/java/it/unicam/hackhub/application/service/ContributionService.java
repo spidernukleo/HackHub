@@ -64,11 +64,16 @@ public class ContributionService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Receiver already invited."); //antispam
         }
 
+        if (dto.getMessage().length() > 50) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Message too long");
+        }
+
         Contribution invite = new Contribution();
         invite.setType(ContributionType.INVITE);
         invite.setSender(leader);
         invite.setReceiver(receiver);
         invite.setTeam(team);
+        invite.setMessage(dto.getMessage());
         invite = contributionRepository.save(invite);
 
         return mapToContributionResponse(invite);

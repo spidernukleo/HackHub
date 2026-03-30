@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class AuthRequest {
-    @NotBlank @Email @Size(max=50)
+    @NotBlank @Size(max=50)
     private String username;
 
     @NotBlank @Size(min=8, max=25)

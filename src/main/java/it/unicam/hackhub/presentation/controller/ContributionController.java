@@ -92,7 +92,7 @@ public class ContributionController {
 
 
     @PostMapping("/{id}/decline")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('TEAM_LEADER', 'TEAM_MEMBER', 'USER')")
     public ResponseEntity<Void> declineContribution(@PathVariable Long id, Authentication authentication) {
         contributionService.declineContribution(id, authentication.getName());
         return ResponseEntity.ok().build();

@@ -78,6 +78,7 @@ public class TeamService {
     public void addMember(Long teamId, User user) {
         Team team = teamRepository.findById(teamId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
         user.setTeam(team);
+        user.setUserRole(UserRole.TEAM_MEMBER);
         userRepository.save(user);
     }
 
