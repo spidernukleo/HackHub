@@ -19,11 +19,13 @@ import java.util.stream.Collectors;
 import it.unicam.hackhub.domain.Team;
 import it.unicam.hackhub.domain.User;
 import it.unicam.hackhub.domain.enums.HackathonState;
+import it.unicam.hackhub.infrastructure.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
 public class HackathonService {
     private final HackathonRepository hackathonRepository;
+    private final UserRepository userRepository;
 
     public List<HackathonListResponse> getAll(){
         List<Hackathon> hackathons = hackathonRepository.findAll();
@@ -63,13 +65,47 @@ public class HackathonService {
     }
 
     public boolean joinHackathon(Long id, String username) {
-        // TODO: Implementare (forse serviranno User/Team come argomenti in base al contesto)
-        return false;
+        //TODO funzione per validazione, le prime righe sono praticamente identica ad abandonTeam
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found"));
+        Team team = user.getTeam();
+        if (team == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not in a team");
+        }
+        if (!team.getLeader().getId().equals(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the team leader can join a hackathon");
+        }
+
+        Hackathon hackathon = hackathonRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hackathon Not Found"));
+
+        if (!hackathon.registerTeam(team)) {
+            return false;
+        }
+
+        hackathonRepository.save(hackathon);
+        return true;
     }
 
-    public Hackathon abandonHackathon(Long id) {
-        // TODO: Logica di abbandono
-        return null;
+    public Hackathon abandonHackathon(Long id, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found"));
+        Team team = user.getTeam();
+        if (team == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not in a team");
+        }
+        if (!team.getLeader().getId().equals(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the team leader can abandon a hackathon");
+        }
+
+        Hackathon hackathon = hackathonRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hackathon Not Found"));
+
+        if (!hackathon.removeTeam(team)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is not registered to this hackathon");
+        }
+
+        return hackathonRepository.save(hackathon);
     }
 
     public boolean addTeam(User u, Team t) {
