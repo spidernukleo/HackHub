@@ -25,7 +25,6 @@ public class HackathonBuilder implements Builder<Hackathon> {
     private User judge;
     private HackathonState state = HackathonState.ENROLLMENT;
     private List<User> mentors = new ArrayList<>();
-    private List<Team> teams = new ArrayList<>();
 
     public HackathonBuilder name(String name) {
         this.name = name;
@@ -88,8 +87,11 @@ public class HackathonBuilder implements Builder<Hackathon> {
             throw new IllegalArgumentException("Starting date can't be after ending date.");
         }
 
+        if (this.mentors == null || this.mentors.isEmpty()) {
+            throw new IllegalArgumentException("A mentor required.");
+        }
+
         return new Hackathon(
-                null, // ID autogenerato
                 this.name,
                 this.rules,
                 this.location,
@@ -101,9 +103,7 @@ public class HackathonBuilder implements Builder<Hackathon> {
                 this.maxTeamSize,
                 this.organizer,
                 this.judge,
-                this.mentors,
-                this.teams,
-                null // Winner
+                this.mentors
         );
     }
 }

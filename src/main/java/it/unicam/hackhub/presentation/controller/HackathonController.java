@@ -3,6 +3,7 @@ package it.unicam.hackhub.presentation.controller;
 
 import java.util.List;
 
+import it.unicam.hackhub.presentation.dto.out.HackathonResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -32,20 +33,21 @@ public class HackathonController {
     private final HackathonService hackathonService;
 
     @GetMapping
-    public ResponseEntity<List<HackathonListResponse>> getAll() {
+    public ResponseEntity<List<HackathonResponse>> getAll() {
         return ResponseEntity.ok(hackathonService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HackathonDetailResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<HackathonResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(hackathonService.getById(id));
     }
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ORGANIZER')")
-    public ResponseEntity<Hackathon> create(@Valid @RequestBody HackathonCreateRequest dto, Authentication authentication) {
+    public ResponseEntity<HackathonResponse> create(@Valid @RequestBody HackathonCreateRequest dto, Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED).body(hackathonService.createHackathon(dto, authentication.getName()));
     }
+
 
     @PostMapping("/{id}/join")
     @PreAuthorize("hasRole('TEAM_LEADER')")
@@ -53,4 +55,7 @@ public class HackathonController {
         hackathonService.joinHackathon(id, authentication.getName());
         return ResponseEntity.ok().build();
     }
+
+
+
 }

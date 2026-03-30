@@ -1,16 +1,20 @@
 package it.unicam.hackhub.application.service;
 
 import it.unicam.hackhub.domain.Hackathon;
+import it.unicam.hackhub.domain.enums.UserRole;
 import it.unicam.hackhub.infrastructure.repository.HackathonRepository;
 import it.unicam.hackhub.presentation.dto.in.HackathonCreateRequest;
 import it.unicam.hackhub.presentation.dto.out.HackathonDetailResponse;
 import it.unicam.hackhub.presentation.dto.out.HackathonListResponse;
+import it.unicam.hackhub.presentation.dto.out.HackathonResponse;
+import it.unicam.hackhub.utilities.HackathonBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -27,26 +31,45 @@ public class HackathonService {
     private final HackathonRepository hackathonRepository;
     private final UserRepository userRepository;
 
-    public List<HackathonListResponse> getAll(){
+    public List<HackathonResponse> getAll(){
         List<Hackathon> hackathons = hackathonRepository.findAll();
-        return hackathons.stream().map(h -> new HackathonListResponse(
-                h.getId(),
-                h.getName()
-        )).collect(Collectors.toList());
+        return hackathons.stream().map(this::mapToResponse).toList();
     }
 
-    public HackathonDetailResponse getById(Long id){
+    public HackathonResponse getById(Long id){
         Hackathon find = hackathonRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hackathon Not Found"));
-        HackathonDetailResponse response = new HackathonDetailResponse();
-        response.setId(find.getId());
-        response.setName(find.getName());
-        response.setPrize(find.getPrize());
-        return response;
+        return mapToResponse(find);
     }
 
-    public Hackathon createHackathon(HackathonCreateRequest req, String username) {
-        // TODO: Implementare la logica per creare un hackathon
-        return null;
+    @Transactional
+    public HackathonResponse createHackathon(HackathonCreateRequest dto, String username) {
+        User organizer = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("Organizer not found"));
+        User judge = userRepository.findByIdAndUserRole(dto.getJudgeId(), UserRole.JUDGE).orElseThrow(() -> new IllegalArgumentException("Judge not found"));
+
+        /// DESIGN PATTERN BUILDER /////
+        HackathonBuilder builder = new HackathonBuilder()
+                .name(dto.getName())
+                .rules(dto.getRules())
+                .location(dto.getLocation())
+                .prize(dto.getPrize())
+                .enrollmentDeadline(dto.getEnrollmentDeadline())
+                .startDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .maxTeamSize(dto.getMaxTeamSize())
+                .organizer(organizer)
+                .judge(judge);
+
+        for (Long mentorId : dto.getMentorIds()) {
+            User mentor = userRepository.findByIdAndUserRole(mentorId, UserRole.MENTOR)
+                    .orElseThrow(() -> new IllegalArgumentException("Mentor not found for ID: " + mentorId));
+            builder.addMentor(mentor);
+        }
+
+        Hackathon newHackathon = builder.build();
+        /////////////////////////////////////////
+
+        Hackathon savedHackathon = hackathonRepository.save(newHackathon);
+        return mapToResponse(savedHackathon);
     }
 
     public boolean validateInfo() {
@@ -136,4 +159,46 @@ public class HackathonService {
         // TODO: Aggiungere un mentor al hackathon
         return false;
     }
+
+
+
+
+
+
+    private HackathonResponse mapToResponse(Hackathon hackathon) {
+        List<Long> mentorIds = hackathon.getMentors().stream()
+                .map(User::getId)
+                .toList();
+
+        Long organizerId = hackathon.getOrganizer() != null ? hackathon.getOrganizer().getId() : null;
+        Long judgeId = hackathon.getJudge() != null ? hackathon.getJudge().getId() : null;
+
+        return HackathonResponse.builder()
+                .id(hackathon.getId())
+                .name(hackathon.getName())
+                .rules(hackathon.getRules())
+                .location(hackathon.getLocation())
+                .prize(hackathon.getPrize())
+                .enrollmentDeadline(hackathon.getEnrollmentDeadline())
+                .startDate(hackathon.getStartDate())
+                .endDate(hackathon.getEndDate())
+                .state(hackathon.getState())
+                .maxTeamSize(hackathon.getMaxTeamSize())
+                .organizerId(organizerId)
+                .judgeId(judgeId)
+                .mentorIds(mentorIds)
+                .build();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 }

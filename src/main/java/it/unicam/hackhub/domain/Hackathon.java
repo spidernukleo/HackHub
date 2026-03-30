@@ -11,8 +11,7 @@ import java.util.List;
 @Entity
 @Table(name="hackathons")
 @Getter @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor // Richiesto da JPA
 public class Hackathon {
 
     @Id
@@ -65,6 +64,30 @@ public class Hackathon {
     @JoinColumn(name = "winner_id")
     private Team winner;
 
+
+    public Hackathon(String name, String rules, String location, double prize,
+                     LocalDateTime enrollmentDeadline, LocalDateTime startDate,
+                     LocalDateTime endDate, HackathonState state, int maxTeamSize,
+                     User organizer, User judge, List<User> mentors) {
+        this.name = name;
+        this.rules = rules;
+        this.location = location;
+        this.prize = prize;
+        this.enrollmentDeadline = enrollmentDeadline;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.state = state;
+        this.maxTeamSize = maxTeamSize;
+        this.organizer = organizer;
+        this.judge = judge;
+        if (mentors != null) {
+            this.mentors.addAll(mentors);
+            for (User mentor : mentors) {
+                mentor.setHackathon(this);
+            }
+        }
+    }
+
     public boolean registerTeam(@NonNull Team target) {
         if (this.teams.contains(target)) return false;
         this.teams.add(target);
@@ -90,7 +113,4 @@ public class Hackathon {
         this.winner = target;
         this.state = HackathonState.CONCLUDED;
     }
-
-
-
 }

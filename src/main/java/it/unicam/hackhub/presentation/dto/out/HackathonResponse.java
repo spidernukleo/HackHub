@@ -1,45 +1,26 @@
-package it.unicam.hackhub.presentation.dto.in;
+package it.unicam.hackhub.presentation.dto.out;
 
-import jakarta.validation.constraints.*;
+import it.unicam.hackhub.domain.enums.HackathonState;
+import lombok.Builder;
 import lombok.Data;
-
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class HackathonCreateRequest {
-
-    @NotBlank
+@Builder
+public class HackathonResponse {
+    private Long id;
     private String name;
-
-    @NotBlank
     private String rules;
-
-    @NotBlank
     private String location;
-
-    @Min(value = 0)
     private double prize;
-
-    @NotNull
-    @FutureOrPresent
     private LocalDateTime enrollmentDeadline;
-
-    @NotNull
-    @Future
     private LocalDateTime startDate;
-
-    @NotNull
-    @Future
     private LocalDateTime endDate;
-
-    @Min(value = 2)
+    private HackathonState state;
     private int maxTeamSize;
-
-    @NotNull
+    private Long organizerId;
     private Long judgeId;
-
-    @NotEmpty
     private List<Long> mentorIds;
 }
