@@ -9,72 +9,61 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name="hackathons")
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuppressWarnings("JpaDataSourceORMInspection")
-@Table(name="hackathons")
 public class Hackathon {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique=true, nullable=false)
-    @Getter
     private String name;
 
-    @Column(unique=true, nullable=false)
-    @Getter
+    @Column(columnDefinition = "TEXT", nullable=false)
     private String rules;
 
     @Column(nullable=false)
-    @Getter
+    private String location;
+
+    @Column(nullable=false)
     private double prize;
 
-    @Column(nullable=false) @Getter private LocalDateTime creationDate;
-    @Column(nullable=false) @Getter private LocalDateTime startDate;
-    @Column(nullable=false) @Getter private LocalDateTime evaluationDate;
-    @Column(nullable=false) @Getter private LocalDateTime endingDate;
+    @Column(nullable=false)
+    private LocalDateTime enrollmentDeadline;
+
+    @Column(nullable=false)
+    private LocalDateTime startDate;
+
+    @Column(nullable=false)
+    private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable=false)
-    @Getter @Setter
     private HackathonState state;
 
     @Column(nullable=false)
-    @Getter
-    private int minTeams;
+    private int maxTeamSize;
 
-    @Column(nullable=false)
-    @Getter
-    private int maxTeams;
-
-    //rivalutare se vanno trattati come tipo User o UserRole
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "organizer_id")
-    @Getter
+    @JoinColumn(name = "organizer_id", nullable=false)
     private User organizer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "judge_id")
-    @Getter @Setter
+    @JoinColumn(name = "judge_id", nullable=false)
     private User judge;
 
-    @OneToMany(mappedBy = "hackathon", fetch = FetchType.LAZY)
-    @Getter @Setter
+    @OneToMany(mappedBy = "hackathon", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<User> mentors = new ArrayList<>();
 
-    @OneToMany(mappedBy = "currentHackathon", fetch = FetchType.LAZY)
-    @Getter
+    @OneToMany(mappedBy = "currentHackathon", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Team> teams = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "winner_id")
-    @Getter @Setter
     private Team winner;
-
-    public Hackathon(String name, String rules, double prize, LocalDateTime creationDate, LocalDateTime startDate, LocalDateTime evaluationDate, LocalDateTime endingDate, int minTeams, int maxTeams, User organizer, User judge) {
-    }
 
     public boolean registerTeam(@NonNull Team target) {
         if (this.teams.contains(target)) return false;
@@ -97,7 +86,11 @@ public class Hackathon {
         return true;
     }
 
-    public void proclaimWinner(Team target) {
+    public void proclaimWinner(@NonNull Team target) {
         this.winner = target;
+        this.state = HackathonState.CONCLUDED;
     }
+
+
+
 }

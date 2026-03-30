@@ -1,84 +1,109 @@
 package it.unicam.hackhub.utilities;
 
 import it.unicam.hackhub.domain.Hackathon;
+import it.unicam.hackhub.domain.Team;
 import it.unicam.hackhub.domain.User;
+import it.unicam.hackhub.domain.enums.HackathonState;
 import jakarta.validation.constraints.Positive;
 import lombok.NonNull;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-public class HackathonBuilder implements Builder{
+public class HackathonBuilder implements Builder<Hackathon> {
 
     private String name;
     private String rules;
+    private String location;
     private double prize;
-    private LocalDateTime creationDate;
+    private LocalDateTime enrollmentDeadline;
     private LocalDateTime startDate;
-    private LocalDateTime evaluationDate;
-    private LocalDateTime endingDate;
-    private int minTeams;
-    private int maxTeams;
+    private LocalDateTime endDate;
+    private int maxTeamSize;
     private User organizer;
     private User judge;
+    private HackathonState state = HackathonState.ENROLLMENT;
+    private List<User> mentors = new ArrayList<>();
+    private List<Team> teams = new ArrayList<>();
 
-    @Override
-    public void setName(@NonNull String name) {
+    public HackathonBuilder name(String name) {
         this.name = name;
+        return this;
     }
 
-    @Override
-    public void setRules(@NonNull String rules) {
+    public HackathonBuilder rules(String rules) {
         this.rules = rules;
+        return this;
     }
 
-    @Override
-    public void setPrize(@Positive double prize) {
+    public HackathonBuilder location(String location) {
+        this.location = location;
+        return this;
+    }
+
+    public HackathonBuilder prize(double prize) {
         this.prize = prize;
+        return this;
     }
 
-
-    @Override
-    public void setCreationDate(@NonNull LocalDateTime creationDate) {
-        this.creationDate = creationDate;
+    public HackathonBuilder enrollmentDeadline(LocalDateTime enrollmentDeadline) {
+        this.enrollmentDeadline = enrollmentDeadline;
+        return this;
     }
 
-    @Override
-    public void setStartDate(@NonNull LocalDateTime startDate) {
+    public HackathonBuilder startDate(LocalDateTime startDate) {
         this.startDate = startDate;
+        return this;
     }
 
-    @Override
-    public void setEvaluationDate(@NonNull LocalDateTime evaluationDate) {
-        this.evaluationDate = evaluationDate;
+    public HackathonBuilder endDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+        return this;
     }
 
-    @Override
-    public void setEndingDate(@NonNull LocalDateTime endingDate) {
-        this.endingDate = endingDate;
+    public HackathonBuilder maxTeamSize(int maxTeamSize) {
+        this.maxTeamSize = maxTeamSize;
+        return this;
     }
 
-    @Override
-    public void setminTeams(@Positive int minTeams) {
-        this.minTeams = minTeams;
-    }
-
-    @Override
-    public void setMaxTeams(@Positive int maxTeams) {
-         this.maxTeams = maxTeams;
-    }
-
-    @Override
-    public void setOrganizer(@NonNull User organizer) {
+    public HackathonBuilder organizer(User organizer) {
         this.organizer = organizer;
+        return this;
     }
 
-    @Override
-    public void setJudge(@NonNull User judge) {
+    public HackathonBuilder judge(User judge) {
         this.judge = judge;
+        return this;
+    }
+
+    public HackathonBuilder addMentor(User mentor) {
+        this.mentors.add(mentor);
+        return this;
     }
 
     @Override
-    public Hackathon getResult() {
-        return new Hackathon(name, rules, prize, creationDate, startDate, evaluationDate, endingDate, minTeams, maxTeams, organizer, judge);
+    public Hackathon build() {
+        if (this.startDate != null && this.endDate != null && this.startDate.isAfter(this.endDate)) {
+            throw new IllegalArgumentException("Starting date can't be after ending date.");
+        }
+
+        return new Hackathon(
+                null, // ID autogenerato
+                this.name,
+                this.rules,
+                this.location,
+                this.prize,
+                this.enrollmentDeadline,
+                this.startDate,
+                this.endDate,
+                this.state,
+                this.maxTeamSize,
+                this.organizer,
+                this.judge,
+                this.mentors,
+                this.teams,
+                null // Winner
+        );
     }
 }
