@@ -1,9 +1,8 @@
 package it.unicam.hackhub.domain;
+import it.unicam.hackhub.domain.enums.ContributionStatus;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.Getter;
-
-import it.unicam.hackhub.domain.enums.ContributionState;
 import it.unicam.hackhub.domain.enums.ContributionType;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +22,7 @@ public class Contribution {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ContributionState status;
+    private ContributionStatus status;
 
     @JoinColumn(name = "sender_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,16 +50,16 @@ public class Contribution {
             this.creationDate = LocalDateTime.now();
         }
         if (this.status == null) {
-            this.status = ContributionState.PENDING;
+            this.status = ContributionStatus.PENDING;
         }
     }
 
 
     public void accept(){
-        this.status = ContributionState.ACCEPTED;
+        this.status = ContributionStatus.ACCEPTED;
     }
 
     public void decline(){
-        this.status = ContributionState.DECLINED;
+        this.status = ContributionStatus.DECLINED;
     }
 }

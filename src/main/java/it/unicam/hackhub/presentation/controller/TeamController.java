@@ -19,7 +19,7 @@ public class TeamController {
     private final TeamService teamService;
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('VISITOR')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<TeamCreateResponse> create(@Valid @RequestBody TeamCreateRequest dto, Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED).body(teamService.createTeam(dto, authentication.getName()));
     }

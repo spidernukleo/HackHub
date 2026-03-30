@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import it.unicam.hackhub.domain.Team;
 import it.unicam.hackhub.domain.User;
-import it.unicam.hackhub.domain.enums.ContributionState;
+import it.unicam.hackhub.domain.enums.ContributionStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -18,9 +18,9 @@ public interface ContributionRepository extends JpaRepository<Contribution, Long
 
     List<Contribution> findByReceiverAndType(User receiver, ContributionType type);
 
-    List<Contribution> findByReceiverAndTypeAndStatus(User receiver, ContributionType type, ContributionState status);
+    List<Contribution> findByReceiverAndTypeAndStatus(User receiver, ContributionType type, ContributionStatus status);
 
-    Boolean existsByTeamAndReceiverAndStatusAndType(Team team, User reciever, ContributionState state, ContributionType type);
+    Boolean existsByTeamAndReceiverAndStatusAndType(Team team, User reciever, ContributionStatus state, ContributionType type);
 
     Optional<Contribution> findByIdAndReceiver(Long id, User receiver);
 }

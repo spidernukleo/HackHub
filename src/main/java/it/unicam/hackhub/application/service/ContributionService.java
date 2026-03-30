@@ -3,7 +3,7 @@ package it.unicam.hackhub.application.service;
 import it.unicam.hackhub.domain.Contribution;
 import it.unicam.hackhub.domain.Team;
 import it.unicam.hackhub.domain.User;
-import it.unicam.hackhub.domain.enums.ContributionState;
+import it.unicam.hackhub.domain.enums.ContributionStatus;
 import it.unicam.hackhub.domain.enums.ContributionType;
 import it.unicam.hackhub.domain.enums.UserRole;
 import it.unicam.hackhub.infrastructure.repository.ContributionRepository;
@@ -25,7 +25,7 @@ public class ContributionService {
     private final ContributionRepository contributionRepository;
     private final UserRepository userRepository;
 
-    public List<InviteResponse> getContributions(String email, ContributionState status) {
+    public List<InviteResponse> getContributions(String email, ContributionStatus status) {
         User receiver = userRepository.findByUsername(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
 
         List<Contribution> invites;
@@ -68,7 +68,7 @@ public class ContributionService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Receiver is already in a team. / Can't invite staff member.");
         }
 
-        if (contributionRepository.existsByTeamAndReceiverAndStatusAndType(team, receiver, ContributionState.PENDING, ContributionType.INVITE)) {
+        if (contributionRepository.existsByTeamAndReceiverAndStatusAndType(team, receiver, ContributionStatus.PENDING, ContributionType.INVITE)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Receiver already invited."); //antispam
         }
 

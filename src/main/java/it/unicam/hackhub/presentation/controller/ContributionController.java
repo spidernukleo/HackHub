@@ -2,7 +2,7 @@ package it.unicam.hackhub.presentation.controller;
 
 
 import it.unicam.hackhub.application.service.ContributionService;
-import it.unicam.hackhub.domain.enums.ContributionState;
+import it.unicam.hackhub.domain.enums.ContributionStatus;
 import it.unicam.hackhub.presentation.dto.in.InviteRequest;
 import it.unicam.hackhub.presentation.dto.out.InviteResponse;
 import it.unicam.hackhub.presentation.dto.in.MessageRequest;
@@ -23,9 +23,9 @@ public class ContributionController {
 
     private final ContributionService contributionService;
 
-    @GetMapping("/invites")
-    @PreAuthorize("hasRole('VISITOR')")
-    public ResponseEntity<List<InviteResponse>> getInvites(@RequestParam(required = false) ContributionState status, Authentication authentication) {
+    @GetMapping("/me/invites")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<List<InviteResponse>> getInvites(@RequestParam(required = false) ContributionStatus status, Authentication authentication) {
         return ResponseEntity.ok(contributionService.getContributions(authentication.getName(), status));
     }
 
@@ -82,14 +82,14 @@ public class ContributionController {
     }
 
     @PostMapping("/{id}/accept")
-    @PreAuthorize("hasRole('VISITOR')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> acceptContribution(@PathVariable Long id, Authentication authentication) {
         contributionService.acceptContribution(id, authentication.getName());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/decline")
-    @PreAuthorize("hasRole('VISITOR')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> declineContribution(@PathVariable Long id, Authentication authentication) {
         contributionService.declineContribution(id, authentication.getName());
         return ResponseEntity.ok().build();

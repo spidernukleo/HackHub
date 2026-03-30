@@ -1,6 +1,6 @@
 package it.unicam.hackhub.presentation.dto.out;
 
-import it.unicam.hackhub.domain.enums.ContributionState;
+import it.unicam.hackhub.domain.enums.ContributionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +14,7 @@ public class InviteResponse {
     private Long senderId;
     private Long receiverId;
     private Long teamId;
-    private ContributionState status;
+    private ContributionStatus status;
 
 
 }

@@ -1,5 +1,5 @@
 package it.unicam.hackhub.domain.enums;
 
-public enum ContributionState {
+public enum ContributionStatus {
     ACCEPTED,DECLINED,PENDING
 }
