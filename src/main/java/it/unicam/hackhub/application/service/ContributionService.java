@@ -39,73 +39,6 @@ public class ContributionService {
         return invites.stream().map(this::mapToContributionResponse).toList();
     }
 
-    public ContributionResponse getById(Long id, String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
-
-        Contribution contribution = contributionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contribution not found."));
-
-        //CONTROLLO DI SICUREZZA
-        boolean isSender = contribution.getSender() != null && contribution.getSender().equals(user);
-        boolean isReceiver = contribution.getReceiver() != null && contribution.getReceiver().equals(user);
-
-        if (!isSender && !isReceiver) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to view this contribution.");
-        }
-
-        return mapToContributionResponse(contribution);
-    }
-
-
-    @Transactional
-    public void acceptContribution(Long id, String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
-        Contribution contribution = contributionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invite not found"));
-        if (!contribution.getReceiver().equals(user)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not yours.");
-        }
-        if (contribution.getStatus() != ContributionStatus.PENDING) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invite already used.");
-        }
-
-        if(contribution.getType().equals(ContributionType.INVITE)) {
-            if (user.getTeam() != null ) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You already are in a team.");
-            }
-            contribution.accept();
-            contributionRepository.save(contribution);
-            teamService.addMember(contribution.getTeam().getId(), user);
-        }
-
-        if(contribution.getType().equals(ContributionType.SUPPORT_REQUEST)) {
-            //caso d'uso PROPOSTA CALL
-            //valutare se fare endpoint separato o  vabene sto if a 3
-        }
-
-        if(contribution.getType().equals(ContributionType.REPORT)) {
-            //caso d'uso BANNA TEAM
-            //valutare se fare endpoint separato o  vabene sto if a 3
-
-        }
-
-    }
-
-    @Transactional
-    public void declineContribution(Long id, String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
-        Contribution contribution = contributionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invite not found"));
-        if (!contribution.getReceiver().equals(user)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not yours.");
-        }
-        if (contribution.getStatus() != ContributionStatus.PENDING) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invite already used.");
-        } //codice duplicato su accept, valutare se estrarlo in un boolean ? boh
-        contribution.decline();
-        contributionRepository.save(contribution);
-    }
-
-
-
-
     @Transactional
     public ContributionResponse sendInvite(Long teamId, InviteRequest dto, String username){
         User leader = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sender not found."));
@@ -141,6 +74,121 @@ public class ContributionService {
         return mapToContributionResponse(invite);
     }
 
+    @Transactional
+    public void acceptInvite(Long id, String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+        Contribution contribution = contributionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invite not found"));
+        checkIfValidContribution(contribution, user);
+        if (!contribution.getType().equals(ContributionType.INVITE)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not an invite.");
+        }
+
+        if (user.getTeam() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You already are in a team.");
+        }
+
+        contribution.accept();
+        contributionRepository.save(contribution);
+        teamService.addMember(contribution.getTeam().getId(), user);
+    }
+
+
+
+    public List<ContributionResponse> getMySupportRequests(String username, ContributionStatus status) {
+        User receiver = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+
+        List<Contribution> invites;
+        if (status != null) {
+            invites = contributionRepository.findByReceiverAndTypeAndStatus(receiver, ContributionType.SUPPORT_REQUEST, status);
+        } else {
+            invites = contributionRepository.findByReceiverAndType(receiver, ContributionType.SUPPORT_REQUEST);
+        }
+
+        return invites.stream().map(this::mapToContributionResponse).toList();
+    }
+
+    public boolean sendSupportRequest(Long teamId, MessageRequest req, String username) {
+        // TODO: Implementare la logica per inviare una richiesta di supporto
+        return false;
+    }
+
+    @Transactional
+    public void proposeCall(Long id, String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+        Contribution contribution = contributionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contribution not found."));
+        checkIfValidContribution(contribution, user);
+        if (!contribution.getType().equals(ContributionType.SUPPORT_REQUEST)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a support request.");
+        }
+        //caso d'uso proporisionze call prossima iterazione
+    }
+
+
+    public List<ContributionResponse> getMyReports(String username, ContributionStatus status) {
+        User receiver = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+
+        List<Contribution> invites;
+        if (status != null) {
+            invites = contributionRepository.findByReceiverAndTypeAndStatus(receiver, ContributionType.REPORT, status);
+        } else {
+            invites = contributionRepository.findByReceiverAndType(receiver, ContributionType.REPORT);
+        }
+
+        return invites.stream().map(this::mapToContributionResponse).toList();
+    }
+
+    public boolean sendReport(Long teamId, MessageRequest req, String username) {
+        // TODO: Implementare la logica per inviare un referto/report
+        return false;
+    }
+
+    @Transactional
+    public void banTeam(Long id, String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+        Contribution contribution = contributionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contribution not found."));
+        checkIfValidContribution(contribution, user);
+        if (!contribution.getType().equals(ContributionType.REPORT)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a report.");
+        }
+
+        //caso d'uso ban team prossima iterazione
+    }
+
+
+
+
+    public ContributionResponse getById(Long id, String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+        Contribution contribution = contributionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contribution not found."));
+        boolean isSender = contribution.getSender() != null && contribution.getSender().equals(user);
+        boolean isReceiver = contribution.getReceiver() != null && contribution.getReceiver().equals(user);
+
+        if (!isSender && !isReceiver) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not yours.");
+        }
+
+        return mapToContributionResponse(contribution);
+    }
+
+
+    @Transactional
+    public void declineContribution(Long id, String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+        Contribution contribution = contributionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found"));
+        checkIfValidContribution(contribution, user);
+        contribution.decline();
+        contributionRepository.save(contribution);
+    }
+
+    private void checkIfValidContribution(Contribution contribution, User user) {
+        if (!contribution.getReceiver().equals(user)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not yours.");
+        }
+
+        if (contribution.getStatus() != ContributionStatus.PENDING) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already handled.");
+        }
+    }
 
     private ContributionResponse mapToContributionResponse(Contribution c) {
         return ContributionResponse.builder()
@@ -154,23 +202,4 @@ public class ContributionService {
                 .message(c.getMessage())
                 .build();
     }
-
-    public boolean sendSupportRequest(Long teamId, MessageRequest req, String username) {
-        // TODO: Implementare la logica per inviare una richiesta di supporto
-        return false;
-    }
-
-    public boolean sendReport(Long teamId, MessageRequest req, String username) {
-        // TODO: Implementare la logica per inviare un referto/report
-        return false;
-    }
-
-    public List<ContributionResponse> getMySupportRequests(String username, ContributionStatus status) {
-        return null; //PROSSIMA ITERAZIONE
-    }
-
-    public List<ContributionResponse> getMyReports(String username, ContributionStatus status) {
-        return null; //PROSSIMA ITERAZIONE
-    }
-
 }

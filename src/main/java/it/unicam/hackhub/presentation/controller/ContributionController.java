@@ -28,52 +28,45 @@ public class ContributionController {
         return ResponseEntity.ok(contributionService.getMyInvites(authentication.getName(), status));
     }
 
-    @GetMapping("/me/support-requests")
-    @PreAuthorize("hasRole('MENTOR')")
-    public ResponseEntity<List<ContributionResponse>> getSupportRequests(@RequestParam(required = false) ContributionStatus status, Authentication authentication) {
-        return ResponseEntity.ok(contributionService.getMySupportRequests(authentication.getName(), status));
-    }
-
-    @GetMapping("/me/reports")
-    @PreAuthorize("hasRole('ORGANIZER')")
-    public ResponseEntity<List<ContributionResponse>> getReports(@RequestParam(required = false) ContributionStatus status, Authentication authentication) {
-        return ResponseEntity.ok(contributionService.getMyInvites(authentication.getName(), status));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ContributionResponse> getById(@PathVariable Long id, Authentication authentication) {
-        return ResponseEntity.ok(contributionService.getById(id, authentication.getName()));
-    }
-
     @PostMapping("/{teamId}/invite")
     @PreAuthorize("hasRole('TEAM_LEADER')")
     public ResponseEntity<ContributionResponse> sendInvite(@PathVariable Long teamId, @RequestBody InviteRequest dto, Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED).body(contributionService.sendInvite(teamId, dto, authentication.getName()));
     }
 
-
     @PostMapping("/{id}/accept")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Void> acceptContribution(@PathVariable Long id, Authentication authentication) {
-        contributionService.acceptContribution(id, authentication.getName());
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/{id}/decline")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Void> declineContribution(@PathVariable Long id, Authentication authentication) {
-        contributionService.declineContribution(id, authentication.getName());
+    public ResponseEntity<Void> acceptInvite(@PathVariable Long id, Authentication authentication) {
+        contributionService.acceptInvite(id, authentication.getName());
         return ResponseEntity.ok().build();
     }
 
 
-
+    @GetMapping("/me/support-requests")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<List<ContributionResponse>> getSupportRequests(@RequestParam(required = false) ContributionStatus status, Authentication authentication) {
+        return ResponseEntity.ok(contributionService.getMySupportRequests(authentication.getName(), status));
+    }
 
     @PostMapping("/{teamId}/support")
     @PreAuthorize("hasRole('TEAM_MEMBER')") /// ////////////PROSSIMA ITERAZIONE
     public ResponseEntity<Void> sendSupportRequest(@PathVariable Long teamId, @Valid @RequestBody MessageRequest dto, Authentication authentication) {
         contributionService.sendSupportRequest(teamId, dto, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/{id}/call")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<Void> proposeCall(@PathVariable Long id, Authentication authentication) {
+        contributionService.proposeCall(id, authentication.getName());
+        return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping("/me/reports")
+    @PreAuthorize("hasRole('ORGANIZER')")
+    public ResponseEntity<List<ContributionResponse>> getReports(@RequestParam(required = false) ContributionStatus status, Authentication authentication) {
+        return ResponseEntity.ok(contributionService.getMyReports(authentication.getName(), status));
     }
 
     @PostMapping("/{teamId}/report")
@@ -83,4 +76,25 @@ public class ContributionController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PostMapping("/{id}/ban")
+    @PreAuthorize("hasRole('ORGANIZER')")
+    public ResponseEntity<Void> banTeam(@PathVariable Long id, Authentication authentication) {
+        contributionService.banTeam(id, authentication.getName());
+        return ResponseEntity.ok().build();
+    }
+
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ContributionResponse> getById(@PathVariable Long id, Authentication authentication) {
+        return ResponseEntity.ok(contributionService.getById(id, authentication.getName()));
+    }
+
+
+    @PostMapping("/{id}/decline")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Void> declineContribution(@PathVariable Long id, Authentication authentication) {
+        contributionService.declineContribution(id, authentication.getName());
+        return ResponseEntity.ok().build();
+    }
 }
