@@ -102,11 +102,10 @@ public class Hackathon {
         return true;
     }
 
-    public boolean addMentor(@NonNull User target) {
-        if (this.mentors.contains(target)) return false;
+    public void addMentor(@NonNull User target) {
+        if (this.mentors.contains(target)) return;
         this.mentors.add(target);
         target.setHackathon(this);
-        return true;
     }
 
     public void proclaimWinner(@NonNull Team target) {
