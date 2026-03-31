@@ -65,14 +65,11 @@ public class HackathonController {
         return ResponseEntity.ok(response);
     }
 
-
-
-
-    @PostMapping("/{id}/join")
+    @PostMapping("/{hackathonId}/join")
     @PreAuthorize("hasRole('TEAM_LEADER')")
-    public ResponseEntity<Void> joinHackathon(@PathVariable Long id, Authentication authentication) {
-        hackathonService.joinHackathon(id, authentication.getName());
-        return ResponseEntity.ok().build();
+    public ResponseEntity<HackathonResponse> joinHackathon(@PathVariable Long hackathonId, Authentication authentication) {
+        HackathonResponse response = hackathonService.joinHackathon(hackathonId, authentication.getName());
+        return ResponseEntity.ok(response);
     }
 
 

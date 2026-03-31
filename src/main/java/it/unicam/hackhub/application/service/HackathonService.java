@@ -116,48 +116,60 @@ public class HackathonService {
     }
 
 
-    public boolean joinHackathon(Long id, String username) {
-        //TODO funzione per validazione, le prime righe sono praticamente identica ad abandonTeam
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found"));
-        Team team = user.getTeam();
-        if (team == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not in a team");
-        }
-        if (!team.getLeader().getId().equals(user.getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the team leader can join a hackathon");
+    public HackathonResponse joinHackathon(Long id, String username) {
+        User teamLeader = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        Team team = teamLeader.getTeam();
+        if (team == null || !teamLeader.isTeamLeader()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not the leader.");
         }
 
-        Hackathon hackathon = hackathonRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hackathon Not Found"));
-
-        if (!hackathon.registerTeam(team)) {
-            return false;
+        Hackathon hackathon = hackathonRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hackathon Not Found"));
+        if (hackathon.getState() != HackathonState.ENROLLMENT) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hackathon is not in ENROLLMENT state.");
         }
 
-        hackathonRepository.save(hackathon);
-        return true;
+        if (java.time.LocalDateTime.now().isAfter(hackathon.getEnrollmentDeadline())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Enrollment deadline has passed.");
+        }
+
+        if (team.getMembers().size() > hackathon.getMaxTeamSize()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is too large for this hackathon. Maximum allowed: " + hackathon.getMaxTeamSize());
+        }
+
+        if (team.getCurrentHackathon() != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Already in an hackathon.");
+        }
+
+        if (hackathon.getTeams().contains(team)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team already in this hackathon.");
+        }
+
+        hackathon.getTeams().add(team);
+        team.setCurrentHackathon(hackathon);
+        Hackathon savedHackathon = hackathonRepository.save(hackathon);
+        return mapToResponse(savedHackathon);
     }
 
     public Hackathon abandonHackathon(Long id, String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found"));
-        Team team = user.getTeam();
-        if (team == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not in a team");
-        }
-        if (!team.getLeader().getId().equals(user.getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the team leader can abandon a hackathon");
-        }
-
-        Hackathon hackathon = hackathonRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hackathon Not Found"));
-
-        if (!hackathon.removeTeam(team)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is not registered to this hackathon");
-        }
-
-        return hackathonRepository.save(hackathon);
+//        User user = userRepository.findByUsername(username)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found"));
+//        Team team = user.getTeam();
+//        if (team == null) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not in a team");
+//        }
+//        if (!team.getLeader().getId().equals(user.getId())) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the team leader can abandon a hackathon");
+//        }
+//
+//        Hackathon hackathon = hackathonRepository.findById(id)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hackathon Not Found"));
+//
+//        if (!hackathon.removeTeam(team)) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is not registered to this hackathon");
+//        }
+//
+//        return hackathonRepository.save(hackathon);
+        return null;
     }
 
 

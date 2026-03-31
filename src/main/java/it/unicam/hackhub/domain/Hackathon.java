@@ -88,20 +88,6 @@ public class Hackathon {
         }
     }
 
-    public boolean registerTeam(@NonNull Team target) {
-        if (this.teams.contains(target)) return false;
-        this.teams.add(target);
-        target.setCurrentHackathon(this);
-        return true;
-    }
-
-    public boolean removeTeam(@NonNull Team target) {
-        if (!this.teams.contains(target)) return false;
-        this.teams.remove(target);
-        target.setCurrentHackathon(null);
-        return true;
-    }
-
     public void addMentor(@NonNull User target) {
         if (this.mentors.contains(target)) return;
         this.mentors.add(target);
