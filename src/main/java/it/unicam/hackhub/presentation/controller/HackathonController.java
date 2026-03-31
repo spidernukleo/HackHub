@@ -4,6 +4,7 @@ package it.unicam.hackhub.presentation.controller;
 import java.util.List;
 
 import it.unicam.hackhub.presentation.dto.in.AddMentorRequest;
+import it.unicam.hackhub.presentation.dto.in.ProclaimWinnerRequest;
 import it.unicam.hackhub.presentation.dto.out.HackathonResponse;
 import jakarta.validation.Valid;
 
@@ -54,6 +55,13 @@ public class HackathonController {
     @PreAuthorize("hasRole('ORGANIZER')")
     public ResponseEntity<HackathonResponse> addMentor(@Valid @RequestBody AddMentorRequest dto, @PathVariable Long hackathonId, Authentication authentication) {
         HackathonResponse response = hackathonService.addMentor(hackathonId, dto, authentication.getName());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{hackathonId}/proclaim-winner")
+    @PreAuthorize("hasRole('ORGANIZER')")
+    public ResponseEntity<HackathonResponse> proclaimWinner(@Valid @RequestBody ProclaimWinnerRequest dto, @PathVariable Long hackathonId, Authentication authentication) {
+        HackathonResponse response = hackathonService.setWinner(hackathonId, dto, authentication.getName());
         return ResponseEntity.ok(response);
     }
 

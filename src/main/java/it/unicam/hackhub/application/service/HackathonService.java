@@ -5,6 +5,7 @@ import it.unicam.hackhub.domain.enums.UserRole;
 import it.unicam.hackhub.infrastructure.repository.HackathonRepository;
 import it.unicam.hackhub.presentation.dto.in.AddMentorRequest;
 import it.unicam.hackhub.presentation.dto.in.HackathonCreateRequest;
+import it.unicam.hackhub.presentation.dto.in.ProclaimWinnerRequest;
 import it.unicam.hackhub.presentation.dto.out.HackathonResponse;
 import it.unicam.hackhub.utilities.HackathonBuilder;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import it.unicam.hackhub.infrastructure.repository.UserRepository;
 public class HackathonService {
     private final HackathonRepository hackathonRepository;
     private final UserRepository userRepository;
+    private final MockPaymentService paymentService;
 
     public List<HackathonResponse> getAll(){
         List<Hackathon> hackathons = hackathonRepository.findAll();
@@ -92,27 +94,27 @@ public class HackathonService {
         return mapToResponse(savedHackathon);
     }
 
+    @Transactional
+    public HackathonResponse setWinner(Long hackathonId, ProclaimWinnerRequest dto, String username) {
+        User organizer = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Organizer not found"));
+        Hackathon hackathon = hackathonRepository.findById(hackathonId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hackathon not found"));
 
+        if (!hackathon.getOrganizer().getUsername().equals(organizer.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not yours.");
+        }
 
+        Team winningTeam = hackathon.getTeams().stream()
+                .filter(team -> team.getId().equals(dto.getTeamId()))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not in this hackathon"));
 
+        hackathon.proclaimWinner(winningTeam);
+        Hackathon savedHackathon = hackathonRepository.save(hackathon);
+        paymentService.sendPrize(winningTeam, savedHackathon.getPrize());
 
-
-
-
-    public boolean validateInfo() {
-        // TODO: Implementare controlli di validazione
-        return false;
+        return mapToResponse(savedHackathon);
     }
 
-    public List<Hackathon> showHackathons() {
-        // TODO: Alternativa o delegato di getAll(). Implementare.
-        return null;
-    }
-
-    public Hackathon getHackathonDetails() {
-        // TODO: Questo metodo potrebbe richiedere un id come parametro o essere delegato. Implementare.
-        return null;
-    }
 
     public boolean joinHackathon(Long id, String username) {
         //TODO funzione per validazione, le prime righe sono praticamente identica ad abandonTeam
@@ -157,35 +159,6 @@ public class HackathonService {
 
         return hackathonRepository.save(hackathon);
     }
-
-    public boolean addTeam(User u, Team t) {
-        // TODO: Implementare aggiunta di un team all'hackathon
-        return false;
-    }
-
-    public boolean removeTeam(Team t) {
-        // TODO: Implementare rimozione di un team dall'hackathon
-        return false;
-    }
-
-    public List<Team> getParticipants() {
-        // TODO: Implementare recupero dei team iscritti
-        return null;
-    }
-
-    public boolean setWinner(Team team) {
-        // TODO: Implementare assegnazione del vincitore
-        return false;
-    }
-
-    public void setHackathonState(HackathonState s) {
-        // TODO: Aggiornare lo stato dell'Hackathon (richiederebbe possibilmente l'ID)
-    }
-
-
-
-
-
 
 
 
