@@ -97,8 +97,12 @@ public class Hackathon {
     public void proclaimWinner(@NonNull Team target) {
         this.winner = target;
         this.state = HackathonState.CONCLUDED;
-        for (User mentor : this.mentors) {
+
+        for (User mentor : this.mentors) { //pulisco mentori
             mentor.setHackathon(null);
+        }
+        for (Team team : this.teams) { //pulisco teammembers
+            team.setCurrentHackathon(null);
         }
     }
 }

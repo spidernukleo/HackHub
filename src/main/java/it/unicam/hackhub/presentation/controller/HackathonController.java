@@ -3,6 +3,8 @@ package it.unicam.hackhub.presentation.controller;
 
 import java.util.List;
 
+import it.unicam.hackhub.domain.enums.ContributionStatus;
+import it.unicam.hackhub.domain.enums.HackathonState;
 import it.unicam.hackhub.presentation.dto.in.AddMentorRequest;
 import it.unicam.hackhub.presentation.dto.in.ProclaimWinnerRequest;
 import it.unicam.hackhub.presentation.dto.out.HackathonResponse;
@@ -12,12 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,8 +29,8 @@ public class HackathonController {
     private final HackathonService hackathonService;
 
     @GetMapping
-    public ResponseEntity<List<HackathonResponse>> getAll() {
-        return ResponseEntity.ok(hackathonService.getAll());
+    public ResponseEntity<List<HackathonResponse>> getAll(@RequestParam(required = false) HackathonState state) {
+        return ResponseEntity.ok(hackathonService.getAll(state));
     }
 
     @GetMapping("/{id}")

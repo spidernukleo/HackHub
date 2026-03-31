@@ -23,4 +23,5 @@ public class HackathonResponse {
     private Long organizerId;
     private Long judgeId;
     private List<Long> mentorIds;
+    private Long winnerTeamId;
 }

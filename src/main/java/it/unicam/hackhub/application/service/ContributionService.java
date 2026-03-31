@@ -202,6 +202,7 @@ public class ContributionService {
                 .status(c.getStatus())
                 .creationDate(c.getCreationDate())
                 .senderId(c.getSender().getId())
+                .receiverId(c.getReceiver().getId())
                 .teamId(c.getTeam().getId())
                 .hackathonId(c.getHackathon() != null ? c.getHackathon().getId() : null)
                 .message(c.getMessage())

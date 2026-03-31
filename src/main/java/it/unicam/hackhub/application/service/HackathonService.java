@@ -1,6 +1,8 @@
 package it.unicam.hackhub.application.service;
 
+import it.unicam.hackhub.domain.Contribution;
 import it.unicam.hackhub.domain.Hackathon;
+import it.unicam.hackhub.domain.enums.ContributionType;
 import it.unicam.hackhub.domain.enums.UserRole;
 import it.unicam.hackhub.infrastructure.repository.HackathonRepository;
 import it.unicam.hackhub.presentation.dto.in.AddMentorRequest;
@@ -26,8 +28,13 @@ public class HackathonService {
     private final UserRepository userRepository;
     private final MockPaymentService paymentService;
 
-    public List<HackathonResponse> getAll(){
-        List<Hackathon> hackathons = hackathonRepository.findAll();
+    public List<HackathonResponse> getAll(HackathonState state) {
+        List<Hackathon> hackathons;
+        if (state != null) {
+            hackathons = hackathonRepository.findByState(state);
+        } else {
+            hackathons = hackathonRepository.findAll();
+        }
         return hackathons.stream().map(this::mapToResponse).toList();
     }
 
@@ -103,6 +110,10 @@ public class HackathonService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not yours.");
         }
 
+        if (hackathon.getState().equals(HackathonState.CONCLUDED)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already concluded.");
+        }
+
         Team winningTeam = hackathon.getTeams().stream()
                 .filter(team -> team.getId().equals(dto.getTeamId()))
                 .findFirst()
@@ -132,8 +143,13 @@ public class HackathonService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Enrollment deadline has passed.");
         }
 
-        if (team.getMembers().size() > hackathon.getMaxTeamSize()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is too large for this hackathon. Maximum allowed: " + hackathon.getMaxTeamSize());
+        int teamSize = team.getMembers().size();
+        if (teamSize < 2) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team too small, minimum allowed: 2");
+        }
+
+        if (teamSize > hackathon.getMaxTeamSize()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team too large, maximum allowed: " + hackathon.getMaxTeamSize());
         }
 
         if (hackathon.getTeams().contains(team)) {
@@ -143,8 +159,6 @@ public class HackathonService {
         if (team.getCurrentHackathon() != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Already in an hackathon.");
         }
-
-
 
         hackathon.getTeams().add(team);
         team.setCurrentHackathon(hackathon);
@@ -201,6 +215,7 @@ public class HackathonService {
                 .organizerId(organizerId)
                 .judgeId(judgeId)
                 .mentorIds(mentorIds)
+                .winnerTeamId(hackathon.getWinner()!=null ? hackathon.getWinner().getId() : null)
                 .build();
     }
 

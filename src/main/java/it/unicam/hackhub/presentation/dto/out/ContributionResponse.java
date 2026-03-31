@@ -19,6 +19,7 @@ public class ContributionResponse {
     private ContributionStatus status;
     private LocalDateTime creationDate;
     private Long senderId;
+    private Long receiverId;
     private Long teamId;
     private Long hackathonId;
     private String message;
