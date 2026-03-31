@@ -3,6 +3,7 @@ package it.unicam.hackhub.presentation.controller;
 
 import java.util.List;
 
+import it.unicam.hackhub.presentation.dto.in.AddMentorRequest;
 import it.unicam.hackhub.presentation.dto.out.HackathonResponse;
 import jakarta.validation.Valid;
 
@@ -47,6 +48,16 @@ public class HackathonController {
     public ResponseEntity<HackathonResponse> create(@Valid @RequestBody HackathonCreateRequest dto, Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED).body(hackathonService.createHackathon(dto, authentication.getName()));
     }
+
+
+    @PostMapping("/{hackathonId}/add-mentor")
+    @PreAuthorize("hasRole('ORGANIZER')")
+    public ResponseEntity<HackathonResponse> addMentor(@Valid @RequestBody AddMentorRequest dto, @PathVariable Long hackathonId, Authentication authentication) {
+        HackathonResponse response = hackathonService.addMentor(hackathonId, dto, authentication.getName());
+        return ResponseEntity.ok(response);
+    }
+
+
 
 
     @PostMapping("/{id}/join")

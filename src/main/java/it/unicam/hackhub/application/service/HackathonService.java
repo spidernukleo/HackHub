@@ -3,23 +3,16 @@ package it.unicam.hackhub.application.service;
 import it.unicam.hackhub.domain.Hackathon;
 import it.unicam.hackhub.domain.enums.UserRole;
 import it.unicam.hackhub.infrastructure.repository.HackathonRepository;
+import it.unicam.hackhub.presentation.dto.in.AddMentorRequest;
 import it.unicam.hackhub.presentation.dto.in.HackathonCreateRequest;
-import it.unicam.hackhub.presentation.dto.out.HackathonDetailResponse;
-import it.unicam.hackhub.presentation.dto.out.HackathonListResponse;
 import it.unicam.hackhub.presentation.dto.out.HackathonResponse;
 import it.unicam.hackhub.utilities.HackathonBuilder;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
-import java.util.stream.Collectors;
-
 import it.unicam.hackhub.domain.Team;
 import it.unicam.hackhub.domain.User;
 import it.unicam.hackhub.domain.enums.HackathonState;
@@ -43,8 +36,8 @@ public class HackathonService {
 
     @Transactional
     public HackathonResponse createHackathon(HackathonCreateRequest dto, String username) {
-        User organizer = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("Organizer not found"));
-        User judge = userRepository.findByIdAndUserRole(dto.getJudgeId(), UserRole.JUDGE).orElseThrow(() -> new IllegalArgumentException("Judge not found"));
+        User organizer = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ("Organizer not found")));
+        User judge = userRepository.findByIdAndUserRole(dto.getJudgeId(), UserRole.JUDGE).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ("Judge not found")));
 
         /// DESIGN PATTERN BUILDER /////
         HackathonBuilder builder = new HackathonBuilder()
@@ -60,8 +53,11 @@ public class HackathonService {
                 .judge(judge);
 
         for (Long mentorId : dto.getMentorIds()) {
-            User mentor = userRepository.findByIdAndUserRole(mentorId, UserRole.MENTOR)
-                    .orElseThrow(() -> new IllegalArgumentException("Mentor not found for ID: " + mentorId));
+            User mentor = userRepository.findByIdAndUserRole(mentorId, UserRole.MENTOR).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Mentor not found for ID: " + mentorId));
+            if (mentor.getHackathon() != null) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT,"Mentor with ID " + mentorId + " is already assigned to another hackathon.");
+            }
+
             builder.addMentor(mentor);
         }
 
@@ -71,6 +67,37 @@ public class HackathonService {
         Hackathon savedHackathon = hackathonRepository.save(newHackathon);
         return mapToResponse(savedHackathon);
     }
+
+    @Transactional
+    public HackathonResponse addMentor(Long hackathonId, AddMentorRequest dto, String username) {
+        User organizer = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ("Organizer not found")));
+        Hackathon hackathon = hackathonRepository.findById(hackathonId).orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
+
+        if (!hackathon.getOrganizer().getUsername().equals(organizer.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Not yours.");
+        }
+
+        User mentor = userRepository.findByIdAndUserRole(dto.getMentorId(), UserRole.MENTOR).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Mentor not found for ID: " + dto.getMentorId()));
+
+        if (mentor.getHackathon() != null) {
+            if (mentor.getHackathon().getId().equals(hackathonId)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mentor already assigned to this hackathon.");
+            }
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mentor with ID " + mentor.getId() + " already assigned to another hackathon.");
+        }
+
+        hackathon.addMentor(mentor);
+        Hackathon savedHackathon = hackathonRepository.save(hackathon);
+
+        return mapToResponse(savedHackathon);
+    }
+
+
+
+
+
+
+
 
     public boolean validateInfo() {
         // TODO: Implementare controlli di validazione
@@ -155,10 +182,7 @@ public class HackathonService {
         // TODO: Aggiornare lo stato dell'Hackathon (richiederebbe possibilmente l'ID)
     }
 
-    public boolean addMentor(User mentor) {
-        // TODO: Aggiungere un mentor al hackathon
-        return false;
-    }
+
 
 
 
