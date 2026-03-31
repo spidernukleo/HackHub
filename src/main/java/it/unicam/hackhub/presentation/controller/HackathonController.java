@@ -22,10 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import it.unicam.hackhub.application.service.HackathonService;
-import it.unicam.hackhub.domain.Hackathon;
 import it.unicam.hackhub.presentation.dto.in.HackathonCreateRequest;
-import it.unicam.hackhub.presentation.dto.out.HackathonDetailResponse;
-import it.unicam.hackhub.presentation.dto.out.HackathonListResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -69,6 +66,13 @@ public class HackathonController {
     @PreAuthorize("hasRole('TEAM_LEADER')")
     public ResponseEntity<HackathonResponse> joinHackathon(@PathVariable Long hackathonId, Authentication authentication) {
         HackathonResponse response = hackathonService.joinHackathon(hackathonId, authentication.getName());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{hackathonId}/leave")
+    @PreAuthorize("hasRole('TEAM_LEADER')")
+    public ResponseEntity<HackathonResponse> abandonHackathon(@PathVariable Long hackathonId, Authentication authentication) {
+        HackathonResponse response = hackathonService.abandonHackathon(hackathonId, authentication.getName());
         return ResponseEntity.ok(response);
     }
 

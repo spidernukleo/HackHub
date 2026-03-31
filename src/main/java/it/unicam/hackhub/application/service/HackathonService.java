@@ -136,13 +136,15 @@ public class HackathonService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is too large for this hackathon. Maximum allowed: " + hackathon.getMaxTeamSize());
         }
 
+        if (hackathon.getTeams().contains(team)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team already in this hackathon.");
+        }
+
         if (team.getCurrentHackathon() != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Already in an hackathon.");
         }
 
-        if (hackathon.getTeams().contains(team)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team already in this hackathon.");
-        }
+
 
         hackathon.getTeams().add(team);
         team.setCurrentHackathon(hackathon);
@@ -150,26 +152,29 @@ public class HackathonService {
         return mapToResponse(savedHackathon);
     }
 
-    public Hackathon abandonHackathon(Long id, String username) {
-//        User user = userRepository.findByUsername(username)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found"));
-//        Team team = user.getTeam();
-//        if (team == null) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not in a team");
-//        }
-//        if (!team.getLeader().getId().equals(user.getId())) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the team leader can abandon a hackathon");
-//        }
-//
-//        Hackathon hackathon = hackathonRepository.findById(id)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hackathon Not Found"));
-//
-//        if (!hackathon.removeTeam(team)) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is not registered to this hackathon");
-//        }
-//
-//        return hackathonRepository.save(hackathon);
-        return null;
+    @Transactional
+    public HackathonResponse abandonHackathon(Long hackathonId, String username) {
+        User teamLeader = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        Team team = teamLeader.getTeam();
+        if (team == null || !teamLeader.isTeamLeader()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not the leader.");
+        }
+
+        Hackathon hackathon = hackathonRepository.findById(hackathonId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hackathon not found"));
+
+        if (hackathon.getState() != HackathonState.ENROLLMENT) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hackathon already started, cannot leave.");
+        }
+
+        if (team.getCurrentHackathon() == null || !team.getCurrentHackathon().getId().equals(hackathonId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team not in this hackathon.");
+        }
+
+        hackathon.getTeams().remove(team);
+        team.setCurrentHackathon(null);
+
+        Hackathon savedHackathon = hackathonRepository.save(hackathon);
+        return mapToResponse(savedHackathon);
     }
 
 
