@@ -1,17 +1,33 @@
 package it.unicam.hackhub.application.service;
 
-
 import it.unicam.hackhub.domain.Team;
+import it.unicam.hackhub.domain.enums.PaymentType;
+import it.unicam.hackhub.presentation.dto.in.PaymentRequest;
+import it.unicam.hackhub.utilities.strategy.PaymentStrategy;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class MockPaymentService {
-    public void sendPrize(Team team, double amount){
-        // Simulazione del pagamento verso un servizio esterno //FARE DESIGN PATTERN STRATEGY? BOH
-        System.out.println("\n========================================");
-        System.out.println("💳 [PAGAMENTO ESTERNO ESEGUITO]");
-        System.out.println("🏆 Team Vincitore: " + team.getName() + " (ID: " + team.getId() + ")");
-        System.out.println("💰 Importo Inviato: €" + amount);
-        System.out.println("========================================\n");
+
+    private final Map<PaymentType, PaymentStrategy> strategies;
+
+    public MockPaymentService(List<PaymentStrategy> strategyList) {
+        this.strategies = strategyList.stream()
+                .collect(Collectors.toMap(PaymentStrategy::getType, Function.identity()));
+    }
+
+    public void sendPrize(Team team, double amount, PaymentType type){
+        PaymentStrategy strategy = strategies.get(type);
+        if (strategy != null) {
+            PaymentRequest request = new PaymentRequest(team.getId(), amount, type);
+            strategy.pay(request);
+        } else {
+            throw new IllegalStateException("Nessuna strategia di pagamento configurata/trovata per tipo " + type);
+        }
     }
 }

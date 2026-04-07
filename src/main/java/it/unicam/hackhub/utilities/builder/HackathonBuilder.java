@@ -1,11 +1,8 @@
-package it.unicam.hackhub.utilities;
+package it.unicam.hackhub.utilities.builder;
 
 import it.unicam.hackhub.domain.Hackathon;
-import it.unicam.hackhub.domain.Team;
 import it.unicam.hackhub.domain.User;
 import it.unicam.hackhub.domain.enums.HackathonState;
-import jakarta.validation.constraints.Positive;
-import lombok.NonNull;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

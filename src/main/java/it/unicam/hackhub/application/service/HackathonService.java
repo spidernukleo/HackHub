@@ -1,15 +1,13 @@
 package it.unicam.hackhub.application.service;
 
-import it.unicam.hackhub.domain.Contribution;
 import it.unicam.hackhub.domain.Hackathon;
-import it.unicam.hackhub.domain.enums.ContributionType;
 import it.unicam.hackhub.domain.enums.UserRole;
 import it.unicam.hackhub.infrastructure.repository.HackathonRepository;
 import it.unicam.hackhub.presentation.dto.in.AddMentorRequest;
 import it.unicam.hackhub.presentation.dto.in.HackathonCreateRequest;
 import it.unicam.hackhub.presentation.dto.in.ProclaimWinnerRequest;
 import it.unicam.hackhub.presentation.dto.out.HackathonResponse;
-import it.unicam.hackhub.utilities.HackathonBuilder;
+import it.unicam.hackhub.utilities.builder.HackathonBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,6 +18,7 @@ import it.unicam.hackhub.domain.Team;
 import it.unicam.hackhub.domain.User;
 import it.unicam.hackhub.domain.enums.HackathonState;
 import it.unicam.hackhub.infrastructure.repository.UserRepository;
+import it.unicam.hackhub.domain.enums.PaymentType;
 
 @Service
 @RequiredArgsConstructor
@@ -121,7 +120,7 @@ public class HackathonService {
 
         hackathon.proclaimWinner(winningTeam);
         Hackathon savedHackathon = hackathonRepository.save(hackathon);
-        paymentService.sendPrize(winningTeam, savedHackathon.getPrize());
+        paymentService.sendPrize(winningTeam, savedHackathon.getPrize(), dto.getPaymentType());
 
         return mapToResponse(savedHackathon);
     }
