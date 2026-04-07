@@ -9,7 +9,9 @@ public class BankTransferPaymentStrategy implements PaymentStrategy {
 
     @Override
     public boolean pay(PaymentRequest request) {
-        System.out.println("Processing Bank Transfer for team " + request.teamId() + " amount: " + request.amount());
+        System.out.println("Generazione distinta per il Bonifico Bancario...");
+        System.out.println("Bonifico BANCARIO di €" + request.amount() + " preso in carico per il Team ID: " + request.teamId());
+        System.out.println("I fondi saranno disponibili tra 2-3 giorni lavorativi.\n");
         return true;
     }
 
@@ -18,3 +20,4 @@ public class BankTransferPaymentStrategy implements PaymentStrategy {
         return PaymentType.BANK_TRANSFER;
     }
 }
+

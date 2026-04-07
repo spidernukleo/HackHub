@@ -4,7 +4,9 @@ import it.unicam.hackhub.domain.Team;
 import it.unicam.hackhub.domain.enums.PaymentType;
 import it.unicam.hackhub.presentation.dto.in.PaymentRequest;
 import it.unicam.hackhub.utilities.strategy.PaymentStrategy;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -17,8 +19,7 @@ public class MockPaymentService {
     private final Map<PaymentType, PaymentStrategy> strategies;
 
     public MockPaymentService(List<PaymentStrategy> strategyList) {
-        this.strategies = strategyList.stream()
-                .collect(Collectors.toMap(PaymentStrategy::getType, Function.identity()));
+        this.strategies = strategyList.stream().collect(Collectors.toMap(PaymentStrategy::getType, Function.identity()));
     }
 
     public void sendPrize(Team team, double amount, PaymentType type){
@@ -27,7 +28,7 @@ public class MockPaymentService {
             PaymentRequest request = new PaymentRequest(team.getId(), amount, type);
             strategy.pay(request);
         } else {
-            throw new IllegalStateException("Nessuna strategia di pagamento configurata/trovata per tipo " + type);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not valid payment type.");
         }
     }
 }
