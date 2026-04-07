@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
 @Entity
 @Table(name="teams")
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE teams SET deleted = true WHERE id=?")
+@SQLRestriction("deleted = false")
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +42,9 @@ public class Team {
     @JoinColumn(name = "hackathon_id")
     @Getter @Setter
     private Hackathon currentHackathon;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean deleted = false;
 
     public void addMember(User user) {
         this.members.add(user);

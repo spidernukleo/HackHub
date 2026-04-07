@@ -2,6 +2,7 @@ package it.unicam.hackhub.presentation.controller;
 
 
 import it.unicam.hackhub.application.service.TeamService;
+import it.unicam.hackhub.presentation.dto.in.DeleteRequest;
 import it.unicam.hackhub.presentation.dto.in.TeamCreateRequest;
 import it.unicam.hackhub.presentation.dto.out.TeamCreateResponse;
 import jakarta.validation.Valid;
@@ -29,6 +30,13 @@ public class TeamController {
     public ResponseEntity<Void> create(Authentication authentication) {
         teamService.abandonTeam(authentication.getName());
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasRole('TEAM_LEADER')")
+    public ResponseEntity<String> deleteTeam(@Valid @RequestBody DeleteRequest request, Authentication authentication) {
+        teamService.deleteTeam(authentication.getName(), request);
+        return ResponseEntity.ok("Team deleted successfully");
     }
 
 
