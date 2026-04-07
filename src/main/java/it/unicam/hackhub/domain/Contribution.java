@@ -7,10 +7,6 @@ import it.unicam.hackhub.domain.enums.ContributionType;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-//TODO questa classe è bloated,andrebbe rivista e semplificata
-// magari dividendo i vari tipi di contribution in classi separate
-// magari nella prossima iterazione
-
 @Entity
 @NoArgsConstructor
 @Getter @Setter

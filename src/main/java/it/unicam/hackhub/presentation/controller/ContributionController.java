@@ -5,6 +5,7 @@ import it.unicam.hackhub.application.service.ContributionService;
 import it.unicam.hackhub.domain.enums.ContributionStatus;
 import it.unicam.hackhub.presentation.dto.in.InviteRequest;
 import it.unicam.hackhub.presentation.dto.in.MessageRequest;
+import it.unicam.hackhub.presentation.dto.in.ProposeCallRequest;
 import it.unicam.hackhub.presentation.dto.in.SupportRequest;
 import it.unicam.hackhub.presentation.dto.out.ContributionResponse;
 import lombok.RequiredArgsConstructor;
@@ -57,8 +58,8 @@ public class ContributionController {
 
     @PostMapping("/{id}/call")
     @PreAuthorize("hasRole('MENTOR')")
-    public ResponseEntity<Void> proposeCall(@PathVariable Long id, Authentication authentication) {
-        contributionService.proposeCall(id, authentication.getName());
+    public ResponseEntity<Void> proposeCall(@PathVariable Long id, @Valid @RequestBody ProposeCallRequest dto, Authentication authentication) {
+        contributionService.proposeCall(id, dto, authentication.getName());
         return ResponseEntity.ok().build();
     }
 

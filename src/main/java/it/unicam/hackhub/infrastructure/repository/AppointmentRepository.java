@@ -9,10 +9,11 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END " +
+    @Query("SELECT CASE WHEN COUNT(a) = 0 THEN true ELSE false END " +
             "FROM Appointment a WHERE a.mentor = :mentor " +
             "AND a.startTime < :endTime AND a.endTime > :startTime")
     boolean checkAvailability(@Param("mentor") User mentor,
-                                         @Param("startTime") LocalDateTime startTime,
-                                         @Param("endTime") LocalDateTime endTime);
+                              @Param("startTime") LocalDateTime startTime,
+                              @Param("endTime") LocalDateTime endTime);
+
 }

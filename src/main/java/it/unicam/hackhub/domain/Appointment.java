@@ -15,7 +15,7 @@ public class Appointment {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "mentor_id", nullable = false)
     private User mentor;
 
     @ManyToOne(fetch = FetchType.LAZY)

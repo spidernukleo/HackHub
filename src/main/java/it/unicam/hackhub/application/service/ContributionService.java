@@ -10,6 +10,7 @@ import it.unicam.hackhub.domain.enums.UserRole;
 import it.unicam.hackhub.infrastructure.repository.ContributionRepository;
 import it.unicam.hackhub.infrastructure.repository.UserRepository;
 import it.unicam.hackhub.presentation.dto.in.InviteRequest;
+import it.unicam.hackhub.presentation.dto.in.ProposeCallRequest;
 import it.unicam.hackhub.presentation.dto.in.SupportRequest;
 import it.unicam.hackhub.presentation.dto.out.ContributionResponse;
 import lombok.RequiredArgsConstructor;
@@ -102,18 +103,27 @@ public class ContributionService {
     }
 
     @Transactional
-    public void proposeCall(Long id, String username) {
-        User mentor = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+    public void proposeCall(Long id, ProposeCallRequest dto, String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
         Contribution contribution = contributionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contribution not found."));
-        checkIfValidContribution(contribution, mentor);
+        checkIfValidContribution(contribution, user);
         if (!contribution.getType().equals(ContributionType.SUPPORT_REQUEST)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a support request.");
         }
 
-        Appointment appointment = mockCalendarService.scheduleCall(mentor, contribution.getSender().getTeam(), dto.getStart(), dto.getEnd());
+        Appointment appt = mockCalendarService.scheduleCall(
+                user,
+                contribution.getTeam(),
+                dto.getStartTime(),
+                dto.getEndTime()
+        );
 
-        contribution.accept();
-        contribution.setMessage(contribution.getMessage() + "\n[Link Call: " + appointment.getUrl() + "]");
+        contribution.setStatus(ContributionStatus.ACCEPTED);
+
+        String callDetails = String.format("\n\n[Meeting info] Date: %s - Link: %s",
+                appt.getStartTime().toString(),
+                appt.getUrl());
+        contribution.setMessage(contribution.getMessage() + callDetails);
         contributionRepository.save(contribution);
     }
 
