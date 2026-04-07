@@ -3,16 +3,16 @@ package it.unicam.hackhub.presentation.controller;
 
 
 import it.unicam.hackhub.application.service.AuthService;
+import it.unicam.hackhub.presentation.dto.in.DeleteAccountRequest;
 import it.unicam.hackhub.presentation.dto.out.AuthResponse;
 import it.unicam.hackhub.presentation.dto.in.AuthRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -30,5 +30,13 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest dto) {
         return ResponseEntity.ok(authService.login(dto));
     }
+
+    @DeleteMapping("/delete-account")
+    @PreAuthorize("hasAnyRole('TEAM_LEADER', 'TEAM_MEMBER', 'USER')")
+    public ResponseEntity<String> deleteAccount(@Valid @RequestBody DeleteAccountRequest request, Authentication authentication) {
+        authService.deleteAccount(authentication.getName(), request.getPassword());
+        return ResponseEntity.ok("Account deleted");
+    }
+
 
 }

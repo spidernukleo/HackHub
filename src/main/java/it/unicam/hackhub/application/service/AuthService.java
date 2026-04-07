@@ -8,6 +8,8 @@ import it.unicam.hackhub.infrastructure.repository.UserRepository;
 import it.unicam.hackhub.infrastructure.security.JwtService;
 import it.unicam.hackhub.presentation.dto.in.AuthRequest;
 import it.unicam.hackhub.presentation.dto.out.AuthResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -52,5 +55,20 @@ public class AuthService {
         User user = (User) authentication.getPrincipal();
         return new AuthResponse(jwtService.generateToken(user));
     }
+
+    @Transactional
+    public void deleteAccount(String username, String rawPassword) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new BadCredentialsException("Bad Credentials.");
+        }
+
+        if (user.getTeam() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Abandon your team before deleting your account.");
+        }
+
+        userRepository.delete(user);
+    }
+
 
 }
