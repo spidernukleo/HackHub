@@ -49,7 +49,7 @@ public class ContributionController {
     }
 
     @PostMapping("/{teamId}/support")
-    @PreAuthorize("hasRole('TEAM_MEMBER')") /// ////////////PROSSIMA ITERAZIONE
+    @PreAuthorize("hasRole('TEAM_MEMBER')") /// ////////////TODO PROSSIMA ITERAZIONE
     public ResponseEntity<Void> sendSupportRequest(@PathVariable Long teamId, @Valid @RequestBody MessageRequest dto, Authentication authentication) {
         contributionService.sendSupportRequest(teamId, dto, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -70,7 +70,7 @@ public class ContributionController {
     }
 
     @PostMapping("/{teamId}/report")
-    @PreAuthorize("hasRole('MENTOR')") /////////////////////PROSSIMA ITERAZIONE
+    @PreAuthorize("hasRole('MENTOR')") /////////////////////TODO PROSSIMA ITERAZIONE
     public ResponseEntity<Void> sendReport(@PathVariable Long teamId, @Valid @RequestBody MessageRequest dto, Authentication authentication) {
         contributionService.sendReport(teamId, dto, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED).build();

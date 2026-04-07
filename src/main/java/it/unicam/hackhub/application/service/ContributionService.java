@@ -125,7 +125,7 @@ public class ContributionService {
         if (!contribution.getType().equals(ContributionType.SUPPORT_REQUEST)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a support request.");
         }
-        //caso d'uso proporisionze call prossima iterazione
+        //TODO caso d'uso proporisionze call prossima iterazione
     }
 
 
@@ -156,7 +156,7 @@ public class ContributionService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a report.");
         }
 
-        //caso d'uso ban team prossima iterazione
+        //TODO caso d'uso ban team prossima iterazione
     }
 
 
