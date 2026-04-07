@@ -6,9 +6,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class InviteRequest {
+public class SupportRequest {
     @NotNull
-    private Long receiverId;
+    private Long mentorId;
 
     @NotNull
     @Size(max = 50)

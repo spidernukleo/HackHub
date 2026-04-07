@@ -1,5 +1,6 @@
 package it.unicam.hackhub.application.service;
 
+import it.unicam.hackhub.domain.Appointment;
 import it.unicam.hackhub.domain.Contribution;
 import it.unicam.hackhub.domain.Team;
 import it.unicam.hackhub.domain.User;
@@ -9,6 +10,7 @@ import it.unicam.hackhub.domain.enums.UserRole;
 import it.unicam.hackhub.infrastructure.repository.ContributionRepository;
 import it.unicam.hackhub.infrastructure.repository.UserRepository;
 import it.unicam.hackhub.presentation.dto.in.InviteRequest;
+import it.unicam.hackhub.presentation.dto.in.SupportRequest;
 import it.unicam.hackhub.presentation.dto.out.ContributionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,7 @@ public class ContributionService {
     private final ContributionRepository contributionRepository;
     private final UserRepository userRepository;
     private final TeamService teamService;
+    private final MockCalendarService mockCalendarService;
 
     public List<ContributionResponse> getMyInvites(String username, ContributionStatus status) {
         User receiver = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
@@ -38,6 +41,7 @@ public class ContributionService {
 
         return invites.stream().map(this::mapToContributionResponse).toList();
     }
+
 
     @Transactional
     public ContributionResponse sendInvite(Long teamId, InviteRequest dto, String username){
@@ -97,6 +101,22 @@ public class ContributionService {
         teamService.addMember(contribution.getTeam().getId(), user);
     }
 
+    @Transactional
+    public void proposeCall(Long id, String username) {
+        User mentor = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+        Contribution contribution = contributionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contribution not found."));
+        checkIfValidContribution(contribution, mentor);
+        if (!contribution.getType().equals(ContributionType.SUPPORT_REQUEST)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a support request.");
+        }
+
+        Appointment appointment = mockCalendarService.scheduleCall(mentor, contribution.getSender().getTeam(), dto.getStart(), dto.getEnd());
+
+        contribution.accept();
+        contribution.setMessage(contribution.getMessage() + "\n[Link Call: " + appointment.getUrl() + "]");
+        contributionRepository.save(contribution);
+    }
+
 
 
     public List<ContributionResponse> getMySupportRequests(String username, ContributionStatus status) {
@@ -112,21 +132,48 @@ public class ContributionService {
         return invites.stream().map(this::mapToContributionResponse).toList();
     }
 
-    public boolean sendSupportRequest(Long teamId, MessageRequest req, String username) {
-        // TODO: Implementare la logica per inviare una richiesta di supporto
-        return false;
-    }
 
     @Transactional
-    public void proposeCall(Long id, String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
-        Contribution contribution = contributionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contribution not found."));
-        checkIfValidContribution(contribution, user);
-        if (!contribution.getType().equals(ContributionType.SUPPORT_REQUEST)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a support request.");
+    public ContributionResponse sendSupportRequest(Long teamId, SupportRequest dto, String username) {
+        User sender = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sender not found."));
+
+        Team team = sender.getTeam();
+        if (team == null || !team.getId().equals(teamId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not your team.");
         }
-        //TODO caso d'uso proporisionze call prossima iterazione
+
+        if(team.getCurrentHackathon()==null){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not in an hackathon.");
+        }
+
+        User mentor = userRepository.findByIdAndUserRole(dto.getMentorId(), UserRole.MENTOR).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Mentor not found."));
+
+        if(mentor.getHackathon() == null || !mentor.getHackathon().getId().equals(team.getCurrentHackathon().getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Mentor not in that hackathon");
+        }
+
+        if (contributionRepository.existsByTeamAndReceiverAndStatusAndType(team, mentor, ContributionStatus.PENDING, ContributionType.SUPPORT_REQUEST)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A pending support request to this mentor already exists."); //antispam
+        }
+
+        if (dto.getMessage()==null || dto.getMessage().length() > 50) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Message too long.");
+        }
+
+
+        Contribution supportRequest = new Contribution();
+        supportRequest.setType(ContributionType.SUPPORT_REQUEST);
+        supportRequest.setSender(sender);
+        supportRequest.setReceiver(mentor);
+        supportRequest.setTeam(team);
+        supportRequest.setMessage(dto.getMessage());
+
+        supportRequest = contributionRepository.save(supportRequest);
+
+        return mapToContributionResponse(supportRequest);
     }
+
+
 
 
     public List<ContributionResponse> getMyReports(String username, ContributionStatus status) {

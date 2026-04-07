@@ -5,6 +5,7 @@ import it.unicam.hackhub.application.service.ContributionService;
 import it.unicam.hackhub.domain.enums.ContributionStatus;
 import it.unicam.hackhub.presentation.dto.in.InviteRequest;
 import it.unicam.hackhub.presentation.dto.in.MessageRequest;
+import it.unicam.hackhub.presentation.dto.in.SupportRequest;
 import it.unicam.hackhub.presentation.dto.out.ContributionResponse;
 import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
@@ -49,10 +50,9 @@ public class ContributionController {
     }
 
     @PostMapping("/{teamId}/support")
-    @PreAuthorize("hasRole('TEAM_MEMBER')") /// ////////////TODO PROSSIMA ITERAZIONE
-    public ResponseEntity<Void> sendSupportRequest(@PathVariable Long teamId, @Valid @RequestBody MessageRequest dto, Authentication authentication) {
-        contributionService.sendSupportRequest(teamId, dto, authentication.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @PreAuthorize("hasRole('TEAM_MEMBER')")
+    public ResponseEntity<ContributionResponse> sendSupportRequest(@PathVariable Long teamId, @Valid @RequestBody SupportRequest dto, Authentication authentication) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(contributionService.sendSupportRequest(teamId, dto, authentication.getName()));
     }
 
     @PostMapping("/{id}/call")
