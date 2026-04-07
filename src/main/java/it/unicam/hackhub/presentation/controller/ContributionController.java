@@ -51,7 +51,7 @@ public class ContributionController {
     }
 
     @PostMapping("/{teamId}/support")
-    @PreAuthorize("hasRole('TEAM_MEMBER')")
+    @PreAuthorize("hasAnyRole('TEAM_LEADER', 'TEAM_MEMBER')")
     public ResponseEntity<ContributionResponse> sendSupportRequest(@PathVariable Long teamId, @Valid @RequestBody SupportRequest dto, Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED).body(contributionService.sendSupportRequest(teamId, dto, authentication.getName()));
     }
