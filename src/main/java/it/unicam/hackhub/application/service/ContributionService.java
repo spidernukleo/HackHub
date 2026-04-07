@@ -102,33 +102,6 @@ public class ContributionService {
         teamService.addMember(contribution.getTeam().getId(), user);
     }
 
-    @Transactional
-    public void proposeCall(Long id, ProposeCallRequest dto, String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
-        Contribution contribution = contributionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contribution not found."));
-        checkIfValidContribution(contribution, user);
-        if (!contribution.getType().equals(ContributionType.SUPPORT_REQUEST)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a support request.");
-        }
-
-        Appointment appt = mockCalendarService.scheduleCall(
-                user,
-                contribution.getTeam(),
-                dto.getStartTime(),
-                dto.getEndTime()
-        );
-
-        contribution.setStatus(ContributionStatus.ACCEPTED);
-
-        String callDetails = String.format("\n\n[Meeting info] Date: %s - Link: %s",
-                appt.getStartTime().toString(),
-                appt.getUrl());
-        contribution.setMessage(contribution.getMessage() + callDetails);
-        contributionRepository.save(contribution);
-    }
-
-
-
     public List<ContributionResponse> getMySupportRequests(String username, ContributionStatus status) {
         User receiver = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
 
@@ -181,6 +154,32 @@ public class ContributionService {
         supportRequest = contributionRepository.save(supportRequest);
 
         return mapToContributionResponse(supportRequest);
+    }
+
+
+    @Transactional
+    public void proposeCall(Long id, ProposeCallRequest dto, String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+        Contribution contribution = contributionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contribution not found."));
+        checkIfValidContribution(contribution, user);
+        if (!contribution.getType().equals(ContributionType.SUPPORT_REQUEST)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a support request.");
+        }
+
+        Appointment appt = mockCalendarService.scheduleCall(
+                user,
+                contribution.getTeam(),
+                dto.getStartTime(),
+                dto.getEndTime()
+        );
+
+        contribution.setStatus(ContributionStatus.ACCEPTED);
+
+        String callDetails = String.format("\n\n[Meeting info] Date: %s - Link: %s",
+                appt.getStartTime().toString(),
+                appt.getUrl());
+        contribution.setMessage(contribution.getMessage() + callDetails);
+        contributionRepository.save(contribution);
     }
 
 
