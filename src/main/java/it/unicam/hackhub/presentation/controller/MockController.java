@@ -1,15 +1,21 @@
 package it.unicam.hackhub.presentation.controller;
 
 
+import it.unicam.hackhub.domain.Hackathon;
 import it.unicam.hackhub.domain.User;
+import it.unicam.hackhub.domain.enums.HackathonState;
 import it.unicam.hackhub.domain.enums.UserRole;
+import it.unicam.hackhub.infrastructure.repository.HackathonRepository;
 import it.unicam.hackhub.infrastructure.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +29,7 @@ public class MockController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final HackathonRepository hackathonRepository;
 
     @PostMapping("/users")
     public ResponseEntity<String> createMockUsers() {
@@ -56,5 +63,35 @@ public class MockController {
         user.setUserRole(role);
         return user;
     }
+
+    @PostMapping("/hackathons/{id}/next-state")
+    public ResponseEntity<String> advanceHackathonState(@PathVariable Long id) {
+        Hackathon hackathon = hackathonRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hackathon not found."));
+
+        HackathonState currentState = hackathon.getState();
+        HackathonState nextState;
+
+        switch (currentState) {
+            case ENROLLMENT:
+                nextState = HackathonState.ONGOING;
+                break;
+            case ONGOING:
+                nextState = HackathonState.EVALUATION;
+                break;
+            case EVALUATION:
+                nextState = HackathonState.CONCLUDED;
+                break;
+            case CONCLUDED:
+                return ResponseEntity.badRequest().body("L'Hackathon è già concluso, non ci sono altri stati.");
+            default:
+                nextState = HackathonState.ENROLLMENT;
+        }
+
+        hackathon.setState(nextState);
+        hackathonRepository.save(hackathon);
+
+        return ResponseEntity.ok("Stato dell'Hackathon " + id + " avanzato da " + currentState + " a " + nextState + ".");
+    }
+
 
 }
