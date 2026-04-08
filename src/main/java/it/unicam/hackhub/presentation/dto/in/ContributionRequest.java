@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class InviteRequest {
+public class ContributionRequest {
     @NotNull
     private Long receiverId;
 

@@ -3,10 +3,8 @@ package it.unicam.hackhub.presentation.controller;
 
 import it.unicam.hackhub.application.service.ContributionService;
 import it.unicam.hackhub.domain.enums.ContributionStatus;
-import it.unicam.hackhub.presentation.dto.in.InviteRequest;
-import it.unicam.hackhub.presentation.dto.in.MessageRequest;
+import it.unicam.hackhub.presentation.dto.in.ContributionRequest;
 import it.unicam.hackhub.presentation.dto.in.ProposeCallRequest;
-import it.unicam.hackhub.presentation.dto.in.SupportRequest;
 import it.unicam.hackhub.presentation.dto.out.ContributionResponse;
 import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
@@ -32,7 +30,7 @@ public class ContributionController {
 
     @PostMapping("/{teamId}/invite")
     @PreAuthorize("hasRole('TEAM_LEADER')")
-    public ResponseEntity<ContributionResponse> sendInvite(@PathVariable Long teamId, @RequestBody InviteRequest dto, Authentication authentication) {
+    public ResponseEntity<ContributionResponse> sendInvite(@PathVariable Long teamId, @RequestBody ContributionRequest dto, Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED).body(contributionService.sendInvite(teamId, dto, authentication.getName()));
     }
 
@@ -52,7 +50,7 @@ public class ContributionController {
 
     @PostMapping("/{teamId}/support")
     @PreAuthorize("hasAnyRole('TEAM_LEADER', 'TEAM_MEMBER')")
-    public ResponseEntity<ContributionResponse> sendSupportRequest(@PathVariable Long teamId, @Valid @RequestBody SupportRequest dto, Authentication authentication) {
+    public ResponseEntity<ContributionResponse> sendSupportRequest(@PathVariable Long teamId, @Valid @RequestBody ContributionRequest dto, Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED).body(contributionService.sendSupportRequest(teamId, dto, authentication.getName()));
     }
 
@@ -71,10 +69,9 @@ public class ContributionController {
     }
 
     @PostMapping("/{teamId}/report")
-    @PreAuthorize("hasRole('MENTOR')") /////////////////////TODO PROSSIMA ITERAZIONE
-    public ResponseEntity<Void> sendReport(@PathVariable Long teamId, @Valid @RequestBody MessageRequest dto, Authentication authentication) {
-        contributionService.sendReport(teamId, dto, authentication.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<ContributionResponse> sendReport(@PathVariable Long teamId, @Valid @RequestBody ContributionRequest dto, Authentication authentication) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(contributionService.sendReport(teamId, dto, authentication.getName()));
     }
 
     @PostMapping("/{id}/ban")
