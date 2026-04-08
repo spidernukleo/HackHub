@@ -3,7 +3,7 @@ package it.unicam.hackhub.presentation.controller;
 
 
 import it.unicam.hackhub.application.service.AuthService;
-import it.unicam.hackhub.presentation.dto.in.DeleteRequest;
+import it.unicam.hackhub.presentation.dto.in.PasswordConfirmationRequest;
 import it.unicam.hackhub.presentation.dto.out.AuthResponse;
 import it.unicam.hackhub.presentation.dto.in.AuthRequest;
 import jakarta.validation.Valid;
@@ -33,7 +33,7 @@ public class AuthController {
 
     @DeleteMapping("/delete-account")
     @PreAuthorize("hasAnyRole('TEAM_LEADER', 'TEAM_MEMBER', 'USER')")
-    public ResponseEntity<String> deleteAccount(@Valid @RequestBody DeleteRequest request, Authentication authentication) {
+    public ResponseEntity<String> deleteAccount(@Valid @RequestBody PasswordConfirmationRequest request, Authentication authentication) {
         authService.deleteAccount(authentication.getName(), request.getPassword());
         return ResponseEntity.ok("Account deleted");
     }

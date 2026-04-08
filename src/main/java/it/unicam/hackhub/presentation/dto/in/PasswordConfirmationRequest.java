@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class DeleteRequest {
+public class PasswordConfirmationRequest {
     @NotBlank(message = "Password is required")
     private String password;
 }

@@ -4,6 +4,7 @@ package it.unicam.hackhub.presentation.controller;
 import it.unicam.hackhub.application.service.ContributionService;
 import it.unicam.hackhub.domain.enums.ContributionStatus;
 import it.unicam.hackhub.presentation.dto.in.ContributionRequest;
+import it.unicam.hackhub.presentation.dto.in.PasswordConfirmationRequest;
 import it.unicam.hackhub.presentation.dto.in.ProposeCallRequest;
 import it.unicam.hackhub.presentation.dto.out.ContributionResponse;
 import lombok.RequiredArgsConstructor;
@@ -76,10 +77,11 @@ public class ContributionController {
 
     @PostMapping("/{id}/ban")
     @PreAuthorize("hasRole('ORGANIZER')")
-    public ResponseEntity<Void> banTeam(@PathVariable Long id, Authentication authentication) {
-        contributionService.banTeam(id, authentication.getName());
+    public ResponseEntity<Void> banTeam(@PathVariable Long id, @Valid @RequestBody PasswordConfirmationRequest dto, Authentication authentication) {
+        contributionService.banTeam(id, dto, authentication.getName());
         return ResponseEntity.ok().build();
     }
+
 
 
 

@@ -7,7 +7,7 @@ import it.unicam.hackhub.domain.enums.HackathonState;
 import it.unicam.hackhub.domain.enums.UserRole;
 import it.unicam.hackhub.infrastructure.repository.TeamRepository;
 import it.unicam.hackhub.infrastructure.repository.UserRepository;
-import it.unicam.hackhub.presentation.dto.in.DeleteRequest;
+import it.unicam.hackhub.presentation.dto.in.PasswordConfirmationRequest;
 import it.unicam.hackhub.presentation.dto.in.TeamCreateRequest;
 import it.unicam.hackhub.presentation.dto.out.TeamCreateResponse;
 import lombok.RequiredArgsConstructor;
@@ -90,7 +90,7 @@ public class TeamService {
     }
 
 
-    public void deleteTeam(String user, DeleteRequest dto) {
+    public void deleteTeam(String user, PasswordConfirmationRequest dto) {
         User leader = userRepository.findByUsername(user).orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!passwordEncoder.matches(dto.getPassword(), leader.getPassword())) {
