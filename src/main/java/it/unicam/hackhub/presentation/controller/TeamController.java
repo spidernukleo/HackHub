@@ -21,22 +21,22 @@ public class TeamController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<TeamCreateResponse> create(@Valid @RequestBody TeamCreateRequest dto, Authentication authentication) {
+    public ResponseEntity<TeamCreateResponse> createTeam(@Valid @RequestBody TeamCreateRequest dto, Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED).body(teamService.createTeam(dto, authentication.getName()));
     }
 
     @PostMapping("/abandon")
     @PreAuthorize("hasAnyRole('TEAM_LEADER', 'TEAM_MEMBER')")
-    public ResponseEntity<Void> create(Authentication authentication) {
+    public ResponseEntity<Void> abandonTeam(Authentication authentication) {
         teamService.abandonTeam(authentication.getName());
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('TEAM_LEADER')")
-    public ResponseEntity<String> deleteTeam(@Valid @RequestBody PasswordConfirmationRequest request, Authentication authentication) {
+    public ResponseEntity<Void> deleteTeam(@Valid @RequestBody PasswordConfirmationRequest request, Authentication authentication) {
         teamService.deleteTeam(authentication.getName(), request);
-        return ResponseEntity.ok("Team deleted successfully");
+        return ResponseEntity.noContent().build();
     }
 
 
