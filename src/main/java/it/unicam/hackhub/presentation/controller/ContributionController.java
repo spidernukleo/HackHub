@@ -26,7 +26,7 @@ public class ContributionController {
     @GetMapping("/me/invites")
     @PreAuthorize("hasAnyRole('TEAM_LEADER', 'TEAM_MEMBER', 'USER')")
     public ResponseEntity<List<ContributionResponse>> getInvites(@RequestParam(required = false) ContributionStatus status, Authentication authentication) {
-        return ResponseEntity.ok(contributionService.getMyInvites(authentication.getName(), status));
+        return ResponseEntity.ok(contributionService.getInvites(authentication.getName(), status));
     }
 
     @PostMapping("/{teamId}/invite")
@@ -46,7 +46,7 @@ public class ContributionController {
     @GetMapping("/me/support-requests")
     @PreAuthorize("hasRole('MENTOR')")
     public ResponseEntity<List<ContributionResponse>> getSupportRequests(@RequestParam(required = false) ContributionStatus status, Authentication authentication) {
-        return ResponseEntity.ok(contributionService.getMySupportRequests(authentication.getName(), status));
+        return ResponseEntity.ok(contributionService.getSupportRequests(authentication.getName(), status));
     }
 
     @PostMapping("/{teamId}/support")
@@ -66,7 +66,7 @@ public class ContributionController {
     @GetMapping("/me/reports")
     @PreAuthorize("hasRole('ORGANIZER')")
     public ResponseEntity<List<ContributionResponse>> getReports(@RequestParam(required = false) ContributionStatus status, Authentication authentication) {
-        return ResponseEntity.ok(contributionService.getMyReports(authentication.getName(), status));
+        return ResponseEntity.ok(contributionService.getReports(authentication.getName(), status));
     }
 
     @PostMapping("/{teamId}/report")

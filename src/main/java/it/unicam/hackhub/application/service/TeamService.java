@@ -51,8 +51,8 @@ public class TeamService {
     }
 
     @Transactional
-    public void abandonTeam(String email){
-        User user = userRepository.findByUsername(email).orElseThrow(()->new UsernameNotFoundException(email));
+    public void abandonTeam(String username){
+        User user = userRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException(username));
         Team team = user.getTeam();
 
         if(team==null){

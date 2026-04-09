@@ -43,8 +43,8 @@ public class HackathonService {
     }
 
     @Transactional
-    public HackathonResponse createHackathon(HackathonCreateRequest dto, String username) {
-        User organizer = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ("Organizer not found")));
+    public HackathonResponse createHackathon(HackathonCreateRequest dto, String organizerUsername) {
+        User organizer = userRepository.findByUsername(organizerUsername).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ("Organizer not found")));
         User judge = userRepository.findByIdAndUserRole(dto.getJudgeId(), UserRole.JUDGE).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ("Judge not found")));
 
         /// DESIGN PATTERN BUILDER /////
@@ -77,8 +77,8 @@ public class HackathonService {
     }
 
     @Transactional
-    public HackathonResponse addMentor(Long hackathonId, AddMentorRequest dto, String username) {
-        User organizer = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ("Organizer not found")));
+    public HackathonResponse addMentor(Long hackathonId, AddMentorRequest dto, String organizerUsername) {
+        User organizer = userRepository.findByUsername(organizerUsername).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ("Organizer not found")));
         Hackathon hackathon = hackathonRepository.findById(hackathonId).orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
 
         if (!hackathon.getOrganizer().getUsername().equals(organizer.getUsername())) {
@@ -101,8 +101,8 @@ public class HackathonService {
     }
 
     @Transactional
-    public HackathonResponse setWinner(Long hackathonId, ProclaimWinnerRequest dto, String username) {
-        User organizer = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Organizer not found"));
+    public HackathonResponse setWinner(Long hackathonId, ProclaimWinnerRequest dto, String organizerUsername) {
+        User organizer = userRepository.findByUsername(organizerUsername).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Organizer not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hackathon not found"));
 
         if (!hackathon.getOrganizer().getUsername().equals(organizer.getUsername())) {

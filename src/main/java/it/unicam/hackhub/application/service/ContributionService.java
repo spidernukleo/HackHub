@@ -30,7 +30,7 @@ public class ContributionService {
     private final TeamRepository teamRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public List<ContributionResponse> getMyInvites(String username, ContributionStatus status) {
+    public List<ContributionResponse> getInvites(String username, ContributionStatus status) {
         User receiver = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
 
         List<Contribution> invites;
@@ -101,7 +101,7 @@ public class ContributionService {
         contribution.getTeam().addMember(user);
     }
 
-    public List<ContributionResponse> getMySupportRequests(String username, ContributionStatus status) {
+    public List<ContributionResponse> getSupportRequests(String username, ContributionStatus status) {
         User receiver = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
 
         List<Contribution> invites;
@@ -183,7 +183,7 @@ public class ContributionService {
 
 
 
-    public List<ContributionResponse> getMyReports(String username, ContributionStatus status) {
+    public List<ContributionResponse> getReports(String username, ContributionStatus status) {
         User receiver = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
 
         List<Contribution> invites;
