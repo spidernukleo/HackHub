@@ -33,9 +33,9 @@ public class AuthController {
 
     @DeleteMapping("/delete-account")
     @PreAuthorize("hasAnyRole('TEAM_LEADER', 'TEAM_MEMBER', 'USER')")
-    public ResponseEntity<String> deleteAccount(@Valid @RequestBody PasswordConfirmationRequest request, Authentication authentication) {
+    public ResponseEntity<Void> deleteAccount(@Valid @RequestBody PasswordConfirmationRequest request, Authentication authentication) {
         authService.deleteAccount(authentication.getName(), request.getPassword());
-        return ResponseEntity.ok("Account deleted");
+        return ResponseEntity.noContent().build();
     }
 
 
