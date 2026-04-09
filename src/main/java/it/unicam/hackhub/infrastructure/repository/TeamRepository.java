@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
-    Boolean existsByName(String email);
+    Boolean existsByName(String name);
 }

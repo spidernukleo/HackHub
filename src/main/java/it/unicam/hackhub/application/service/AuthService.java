@@ -1,12 +1,12 @@
 package it.unicam.hackhub.application.service;
 
 
-import it.unicam.hackhub.application.exception.UsernameAlreadyUsedException;
 import it.unicam.hackhub.domain.enums.UserRole;
 import it.unicam.hackhub.domain.User;
 import it.unicam.hackhub.infrastructure.repository.UserRepository;
 import it.unicam.hackhub.infrastructure.security.JwtService;
 import it.unicam.hackhub.presentation.dto.in.AuthRequest;
+import it.unicam.hackhub.presentation.dto.in.PasswordConfirmationRequest;
 import it.unicam.hackhub.presentation.dto.out.AuthResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,7 +31,7 @@ public class AuthService {
     @Transactional
     public AuthResponse register(AuthRequest dto) {
         if (userRepository.existsByUsername(dto.getUsername())) {
-            throw new UsernameAlreadyUsedException("Username already used.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already used.");
         }
 
         User user = new User();
@@ -57,9 +57,9 @@ public class AuthService {
     }
 
     @Transactional
-    public void deleteAccount(String username, String rawPassword) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+    public void deleteAccount(String username, PasswordConfirmationRequest dto) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Bad Credentials.");
         }
 

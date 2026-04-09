@@ -81,14 +81,6 @@ public class TeamService {
         }
     }
 
-    @Transactional
-    public void addMember(Long teamId, User user) {
-        Team team = teamRepository.findById(teamId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
-        user.setTeam(team);
-        user.setUserRole(UserRole.TEAM_MEMBER);
-        userRepository.save(user);
-    }
-
 
     public void deleteTeam(String user, PasswordConfirmationRequest dto) {
         User leader = userRepository.findByUsername(user).orElseThrow(() -> new RuntimeException("User not found"));

@@ -14,12 +14,4 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public List<User> getAllUsers() {
-        // Usa nativamente il metodo del repository
-        return userRepository.findAll();
-    }
-
-    public List<User> getMentors() {
-        return userRepository.findByUserRole(UserRole.MENTOR);
-    }
 }

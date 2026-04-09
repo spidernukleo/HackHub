@@ -26,7 +26,6 @@ import java.util.List;
 public class ContributionService {
     private final ContributionRepository contributionRepository;
     private final UserRepository userRepository;
-    private final TeamService teamService;
     private final MockCalendarService mockCalendarService;
     private final TeamRepository teamRepository;
     private final PasswordEncoder passwordEncoder;
@@ -99,8 +98,7 @@ public class ContributionService {
         }
 
         contribution.accept();
-        contributionRepository.save(contribution);
-        teamService.addMember(contribution.getTeam().getId(), user);
+        contribution.getTeam().addMember(user);
     }
 
     public List<ContributionResponse> getMySupportRequests(String username, ContributionStatus status) {
