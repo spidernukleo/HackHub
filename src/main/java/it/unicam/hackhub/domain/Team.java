@@ -55,4 +55,9 @@ public class Team {
         this.members.remove(user);
         user.setTeam(null);
     }
+
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Getter
+    private List<Submission> submissions = new ArrayList<>();
+
 }

@@ -89,9 +89,9 @@ public class HackathonService {
 
         if (mentor.getHackathon() != null) {
             if (mentor.getHackathon().getId().equals(hackathonId)) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mentor already assigned to this hackathon.");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Mentor already assigned to this hackathon.");
             }
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mentor with ID " + mentor.getId() + " already assigned to another hackathon.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Mentor with ID " + mentor.getId() + " already assigned to another hackathon.");
         }
 
         hackathon.addMentor(mentor);

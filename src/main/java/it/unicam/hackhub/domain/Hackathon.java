@@ -64,6 +64,9 @@ public class Hackathon {
     @JoinColumn(name = "winner_id")
     private Team winner;
 
+    @OneToMany(mappedBy = "hackathon", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Submission> submissions = new ArrayList<>();
+
 
     public Hackathon(String name, String rules, String location, double prize,
                      LocalDateTime enrollmentDeadline, LocalDateTime startDate,
