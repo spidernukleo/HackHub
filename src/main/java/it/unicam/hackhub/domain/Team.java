@@ -1,5 +1,6 @@
 package it.unicam.hackhub.domain;
 
+import it.unicam.hackhub.domain.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -49,6 +50,7 @@ public class Team {
     public void addMember(User user) {
         this.members.add(user);
         user.setTeam(this);
+        user.setUserRole(UserRole.TEAM_MEMBER);
     }
 
     public void removeMember(User user) {

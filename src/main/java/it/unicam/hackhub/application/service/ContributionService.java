@@ -98,7 +98,9 @@ public class ContributionService {
         }
 
         contribution.accept();
+
         contribution.getTeam().addMember(user);
+
     }
 
     public List<ContributionResponse> getSupportRequests(String username, ContributionStatus status) {
