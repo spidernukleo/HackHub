@@ -1,0 +1,1209 @@
+{
+  "info": {
+    "_postman_id": "951f7b65-74aa-4393-bbd9-f9a0c169d583",
+    "name": "Hackhub",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53501216",
+    "_collection_link": "https://go.postman.co/collection/53501216-951f7b65-74aa-4393-bbd9-f9a0c169d583?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"User11\",\r\n    \"password\": \"Password123!\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/auth/login",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJVc2VyMTciLCJpYXQiOjE3NzU2MDMzMzMsImV4cCI6MTc3NTY4OTczM30.q_IqTm2SZGrwFpaPqMHDOOE9C0UgSG-ce6oKYGfM4WXLPPdX2mQYEgxu_bZDEGj8",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"password\": \"Password123!\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/auth/delete-account",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "delete-account"
+              ]
+            },
+            "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+          },
+          "response": []
+        },
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"khady@gmail.com\",\r\n    \"password\": \"12345678\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/auth/register",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Team",
+      "item": [
+        {
+          "name": "Create Team",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJVc2VyMTAiLCJpYXQiOjE3NzU1NzgxOTYsImV4cCI6MTc3NTY2NDU5Nn0.1hbUH6W9Mlh1Fx1785zY7sEKHGX_eZTzvac1bjbau_la50u5LQICFdoJwYqcC1TF",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"3\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/team/create",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "team",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Abandon Team",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJVc2VyMTAiLCJpYXQiOjE3NzU1NzgxOTYsImV4cCI6MTc3NTY2NDU5Nn0.1hbUH6W9Mlh1Fx1785zY7sEKHGX_eZTzvac1bjbau_la50u5LQICFdoJwYqcC1TF",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/team/abandon",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "team",
+                "abandon"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Team",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"User11\",\r\n    \"password\": \"Password123!\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/team/delete",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "team",
+                "delete"
+              ]
+            },
+            "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Hackathon",
+      "item": [
+        {
+          "name": "Get Hackathon",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"a\",\r\n    \"surname\": \"b\",\r\n    \"email\": \"khady@gmail.com\",\r\n    \"password\": \"12345678\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/hackathon/2",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "hackathon",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Hackathon",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJPcmdhbml6emF0b3JlMSIsImlhdCI6MTc3NDkxMzg1NiwiZXhwIjoxNzc1MDAwMjU2fQ.3PMNdCHDEw-k0htHU6lTbsopTvf2fSmfj6IdGo1PyaAd2QfM4Q2dZJAJa95AfwZl",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"nuovo hacccccc\",\r\n  \"rules\": \"regoleeeee\",\r\n  \"location\": \"suca\",\r\n  \"prize\": 330303,\r\n  \"enrollmentDeadline\": \"2026-04-15T23:59:59\",\r\n  \"startDate\": \"2026-04-20T09:00:00\",\r\n  \"endDate\": \"2026-04-22T18:00:00\",\r\n  \"maxTeamSize\": 5,\r\n  \"judgeId\": 4,\r\n  \"mentorIds\": [9]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/hackathon/create",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "hackathon",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hackathon add mentor",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJPcmdhbml6emF0b3JlMSIsImlhdCI6MTc3NDkxMzg1NiwiZXhwIjoxNzc1MDAwMjU2fQ.3PMNdCHDEw-k0htHU6lTbsopTvf2fSmfj6IdGo1PyaAd2QfM4Q2dZJAJa95AfwZl",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"mentorId\": 9\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/hackathon/1/add-mentor",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "hackathon",
+                "1",
+                "add-mentor"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hackathon proclaim winner",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJPcmdhbml6emF0b3JlMSIsImlhdCI6MTc3NDkxMzg1NiwiZXhwIjoxNzc1MDAwMjU2fQ.3PMNdCHDEw-k0htHU6lTbsopTvf2fSmfj6IdGo1PyaAd2QfM4Q2dZJAJa95AfwZl",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"teamId\": 3\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/hackathon/3/proclaim-winner",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "hackathon",
+                "3",
+                "proclaim-winner"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hackathon join",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJVc2VyMTgiLCJpYXQiOjE3NzQ5MjEwNzQsImV4cCI6MTc3NTAwNzQ3NH0.xQHtzz8INTnEDJriD6HCrQ_lIj9fULerq5gbq3EPfdbIUmuALC4Nzw9Z70VMn7lX",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/hackathon/3/join",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "hackathon",
+                "3",
+                "join"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hackathon leave",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJVc2VyMTgiLCJpYXQiOjE3NzQ5MTg2ODgsImV4cCI6MTc3NTAwNTA4OH0.yOOn5gCknUmCnnOZ_ottCFdscuMgYZBYMSYYQdGS1Ixow3idl2oA_J9nQ9yopuCr\"",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/hackathon/1/leave",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "hackathon",
+                "1",
+                "leave"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Hackathons",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/hackathon",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "hackathon"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Mock",
+      "item": [
+        {
+          "name": "Users Mock",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJyaXNhbWlzYUBnbWFpbC5jb20iLCJpYXQiOjE3NzQ2MzIwMTMsImV4cCI6MTc3NDcxODQxM30.t6Zet_N3MoKHnxOZ31-zSbNaaBlXDtJ5usdfyc2uMDXObqqBP3QRA7FS6SxmMq7u",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "localhost:8080/api/mock/users",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "mock",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Next state mock",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"User11\",\r\n    \"password\": \"Password123!\"\r\n}"
+            },
+            "url": {
+              "raw": "localhost:8080/api/mock/hackathons/7/next-state",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "mock",
+                "hackathons",
+                "7",
+                "next-state"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Contribution",
+      "item": [
+        {
+          "name": "Invite",
+          "item": [
+            {
+              "name": "Invite in Team",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJVc2VyMTIiLCJpYXQiOjE3NzQ5MjAxMTQsImV4cCI6MTc3NTAwNjUxNH0.e7YtKRW7aKY1IjfrRL7YMGpKEqfsdzRdhEKX_6vwOMXq8UZOKAnueEkhY2PnS_oC",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"receiverId\": \"11\",\r\n    \"message\": \"entra nel mio team lol\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:8080/api/contribution/3/invite",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "contribution",
+                    "3",
+                    "invite"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Accept Invite",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJVc2VyMTMiLCJpYXQiOjE3NzQ5MjAyMjgsImV4cCI6MTc3NTAwNjYyOH0.ELnPdh0g3veBilDHFPEJZNHGJXLi4N1vr_OH1yeXpJKUiftP8SzYZrSktJs95uf4",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:8080/api/contribution/4/accept",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "contribution",
+                    "4",
+                    "accept"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Invites",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJraGFkeUBnbWFpbC5jb20iLCJpYXQiOjE3NzQ4MzY2NzQsImV4cCI6MTc3NDkyMzA3NH0.5yEVE7OrLCawSrj56rkAuRewM9cExcxiQ9-fDm4IDhubKlTrkEcEzS2rzKH5vuBM",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"receiverId\": \"17\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:8080/api/contribution/me/invites?status=PENDING",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "contribution",
+                    "me",
+                    "invites"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "PENDING"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Sup Req",
+          "item": [
+            {
+              "name": "Accept Support Request (call)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJNZW50b3I3IiwiaWF0IjoxNzc1NjAwNzE5LCJleHAiOjE3NzU2ODcxMTl9.oAImaTiUVR2nA8CCmSK8ey4ZLhQl0OEsaGjEt80sEDApM7LuI-IjtBPu0dEZIxwP",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"startTime\": \"2026-04-09T16:00:00\",\r\n    \"endTime\": \"2026-04-09T17:00:00\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:8080/api/contribution/8/call",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "contribution",
+                    "8",
+                    "call"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Sup Requests",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJNZW50b3I3IiwiaWF0IjoxNzc1NjAwNjA0LCJleHAiOjE3NzU2ODcwMDR9.oqjC1Njakw0s9tNHEVES42lt10Wolndj7eUiZQFGzLN0DkKLH8CLrFPNHeOgi_xU",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "localhost:8080/api/contribution/me/support-requests",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "contribution",
+                    "me",
+                    "support-requests"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "PENDING",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Send Sup Req",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJVc2VyMTciLCJpYXQiOjE3NzU2MDA1MzUsImV4cCI6MTc3NTY4NjkzNX0.F18nCnm76E2s9HFItmnwUxg_TW30_6oTlyx3xDJoAe9zNIOM9z9FwDOUxlRHXCay",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"receiverId\": \"7\",\r\n    \"message\": \"aiutooo\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:8080/api/contribution/1/support",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "contribution",
+                    "1",
+                    "support"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Report",
+          "item": [
+            {
+              "name": "Accept report (ban)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJNZW50b3I3IiwiaWF0IjoxNzc1NjAwNzE5LCJleHAiOjE3NzU2ODcxMTl9.oAImaTiUVR2nA8CCmSK8ey4ZLhQl0OEsaGjEt80sEDApM7LuI-IjtBPu0dEZIxwP",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"startTime\": \"2026-04-09T16:00:00\",\r\n    \"endTime\": \"2026-04-09T17:00:00\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:8080/api/contribution/8/ban",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "contribution",
+                    "8",
+                    "ban"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Reports",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJPcmdhbml6emF0b3JlMSIsImlhdCI6MTc3NTY1OTE2NiwiZXhwIjoxNzc1NzQ1NTY2fQ.ta0pLArL8Y2ES_vRBjTytmSC33qLFS5ZfhLia2BeybF1-l7bqh1qMGwFeQAOmd_8",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "localhost:8080/api/contribution/me/reports",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "contribution",
+                    "me",
+                    "reports"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "PENDING",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Send Report",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJVc2VyMTciLCJpYXQiOjE3NzU2MDA1MzUsImV4cCI6MTc3NTY4NjkzNX0.F18nCnm76E2s9HFItmnwUxg_TW30_6oTlyx3xDJoAe9zNIOM9z9FwDOUxlRHXCay",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"receiverId\": \"7\",\r\n    \"message\": \"aiutooo\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:8080/api/contribution/1/report",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "contribution",
+                    "1",
+                    "report"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Get Contribution",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJVc2VyMTgiLCJpYXQiOjE3NzQ4Mzg3NjgsImV4cCI6MTc3NDkyNTE2OH0.iUWK-ghRzNtVT43H9rYCbbGIulNgkqD7Lg_p3h2o12ujLfkWQUJLryiSjB97AptH",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/contribution/7",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "contribution",
+                "7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Decline Contribution",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJPcmdhbml6emF0b3JlMSIsImlhdCI6MTc3NTY2MDYwNCwiZXhwIjoxNzc1NzQ3MDA0fQ.HapgO4u7NMartflMl_hhr1nLD0H-MZYyljVWEE0Cime4tY_dld7wQNyvXADDt93D",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/contribution/9/decline",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "contribution",
+                "9",
+                "decline"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Submission",
+      "item": [
+        {
+          "name": "Submit or update",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"repositoryUrl\": \"ahia\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/submission/hackathon/3",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "submission",
+                "hackathon",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Grade Submission",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"score\" : 6,\r\n    \"gradeComment\" : \"Test test test\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/submission/3/grade",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "submission",
+                "3",
+                "grade"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All By Hackathon",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/submission/hackathon/3",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "submission",
+                "hackathon",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get By ID",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/api/submission/3",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "submission",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
