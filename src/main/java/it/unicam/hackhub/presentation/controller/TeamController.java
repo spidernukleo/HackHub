@@ -4,7 +4,7 @@ package it.unicam.hackhub.presentation.controller;
 import it.unicam.hackhub.application.service.TeamService;
 import it.unicam.hackhub.presentation.dto.in.PasswordConfirmationRequest;
 import it.unicam.hackhub.presentation.dto.in.TeamCreateRequest;
-import it.unicam.hackhub.presentation.dto.out.TeamCreateResponse;
+import it.unicam.hackhub.presentation.dto.out.TeamResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ public class TeamController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<TeamCreateResponse> createTeam(@Valid @RequestBody TeamCreateRequest dto, Authentication authentication) {
+    public ResponseEntity<TeamResponse> createTeam(@Valid @RequestBody TeamCreateRequest dto, Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED).body(teamService.createTeam(dto, authentication.getName()));
     }
 

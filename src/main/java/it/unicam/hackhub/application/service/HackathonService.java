@@ -125,7 +125,7 @@ public class HackathonService {
         return mapToResponse(savedHackathon);
     }
 
-
+    @Transactional
     public HackathonResponse joinHackathon(Long id, String username) {
         User teamLeader = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         Team team = teamLeader.getTeam();

@@ -9,7 +9,7 @@ import it.unicam.hackhub.infrastructure.repository.TeamRepository;
 import it.unicam.hackhub.infrastructure.repository.UserRepository;
 import it.unicam.hackhub.presentation.dto.in.PasswordConfirmationRequest;
 import it.unicam.hackhub.presentation.dto.in.TeamCreateRequest;
-import it.unicam.hackhub.presentation.dto.out.TeamCreateResponse;
+import it.unicam.hackhub.presentation.dto.out.TeamResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,7 +29,7 @@ public class TeamService {
 
 
     @Transactional
-    public TeamCreateResponse createTeam(TeamCreateRequest dto, String user){
+    public TeamResponse createTeam(TeamCreateRequest dto, String user){
         User leader = userRepository.findByUsername(user).orElseThrow(()->new UsernameNotFoundException(user));
         if(leader.getTeam()!=null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"You already are in a team");
@@ -47,7 +47,7 @@ public class TeamService {
         leader.setUserRole(UserRole.TEAM_LEADER);
         userRepository.save(leader);
 
-        return new TeamCreateResponse(newTeam.getId(), newTeam.getName());
+        return new TeamResponse(newTeam.getId(), newTeam.getName());
     }
 
     @Transactional

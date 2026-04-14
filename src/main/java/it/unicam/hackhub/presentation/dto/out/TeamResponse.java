@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeamCreateResponse {
+public class TeamResponse {
     private Long id;
     private String name;
 }
