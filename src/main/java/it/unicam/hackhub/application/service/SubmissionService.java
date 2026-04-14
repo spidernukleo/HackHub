@@ -131,14 +131,11 @@ public class SubmissionService {
         return SubmissionResponse.builder()
                 .id(submission.getId())
                 .hackathonId(submission.getHackathon().getId())
-                .hackathonName(submission.getHackathon().getName())
                 .teamId(submission.getTeam().getId())
-                .teamName(submission.getTeam().getName())
                 .repositoryUrl(submission.getRepositoryUrl())
                 .score(submission.getScore())
                 .gradeComment(submission.getGradeComment())
                 .lastEditedById(submission.getLastEditedBy().getId())
-                .lastEditedByUsername(submission.getLastEditedBy().getUsername())
                 .updatedAt(submission.getUpdatedAt())
                 .build();
     }
